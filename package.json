@@ -1,0 +1,10 @@
+{
+  "name": "letsfocus",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LetsFocus - Pomodoro Timer with Task Management",
+  "scripts": {
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:backend": "pnpm --filter backend dev"
+  }
+}
