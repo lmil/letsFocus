@@ -40,6 +40,72 @@ app.get("/api/db-test", async (req, res) => {
   }
 });
 
+// Create a user (test endpoint)
+app.post("/api/users", async (req, res) => {
+  try {
+    const { email, name } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        status: "error",
+        message: "Email is required",
+      });
+    }
+
+    const user = await prisma.user.create({
+      data: {
+        email,
+        name,
+      },
+    });
+
+    res.status(201).json({
+      status: "success",
+      data: user,
+    });
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to create user",
+    });
+  }
+});
+
+// Create a task (test endpoint)
+app.post("/api/tasks", async (req, res) => {
+  try {
+    const { title, userId } = req.body;
+
+    // Simple validation
+    if (!title || !userId) {
+      return res.status(400).json({
+        status: "error",
+        message: "Title and userId are required",
+      });
+    }
+
+    // Create task in database
+    const task = await prisma.task.create({
+      data: {
+        title,
+        userId,
+      },
+    });
+
+    res.status(201).json({
+      status: "success",
+      data: task,
+    });
+  } catch (error) {
+    console.error("Error creating task:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Failed to create task",
+    });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`#### Server running on http://localhost:${PORT}`);
