@@ -1,0 +1,201 @@
+// LetsFocus Production Schema
+// Features: Soft Deletes, Unlimited Nesting, Full Task Management
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// USER MODEL
+// ============================================================================
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+
+  // Soft delete
+  isActive  Boolean  @default(true)
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tasks      Task[]
+  sessions   Session[]
+  projects   Project[]
+  taskGroups TaskGroup[]
+  settings   Settings?
+}
+
+// ============================================================================
+// PROJECT MODEL - Top-level container
+// ============================================================================
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  color       String   @default("#4ECDC4")
+  description String?
+  order       Int      @default(0)
+
+  // Soft delete
+  isActive    Boolean  @default(true)
+  deletedAt   DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Foreign keys
+  userId      String
+
+  // Relations
+  user        User        @relation(fields: [userId], references: [id])
+  taskGroups  TaskGroup[]
+  tasks       Task[]
+
+  @@index([userId])
+}
+
+// ============================================================================
+// TASK GROUP MODEL - Unlimited nesting hierarchy
+// Users can create ANY hierarchy:
+//   Design > Header > Wireframing
+//   Phase > Week > Day
+//   Sprint > Epic > Story
+// ============================================================================
+model TaskGroup {
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+  order         Int       @default(0)
+  color         String?   @default("#4ECDC4")
+
+  // Self-referencing for unlimited nesting
+  parentGroupId String?
+  parentGroup   TaskGroup?  @relation("TaskGroupHierarchy", fields: [parentGroupId], references: [id], onDelete: Cascade)
+  childGroups   TaskGroup[] @relation("TaskGroupHierarchy")
+
+  // Soft delete
+  isActive      Boolean   @default(true)
+  deletedAt     DateTime?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Foreign keys
+  userId        String
+  projectId     String
+
+  // Relations
+  user          User      @relation(fields: [userId], references: [id])
+  project       Project   @relation(fields: [projectId], references: [id])
+  tasks         Task[]
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([parentGroupId])
+}
+
+// ============================================================================
+// TASK MODEL - Individual work items
+// ============================================================================
+model Task {
+  id                 String   @id @default(uuid())
+  title              String
+  description        String?
+  color              String   @default("#FF6B6B")
+  order              Int      @default(0)
+  estimatedSessions  Int      @default(1)
+  completedSessions  Int      @default(0)
+  isCompleted        Boolean  @default(false)
+
+  // Soft delete
+  isActive           Boolean  @default(true)
+  deletedAt          DateTime?
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Foreign keys
+  userId             String
+  projectId          String?
+  taskGroupId        String?
+
+  // Relations
+  user               User       @relation(fields: [userId], references: [id])
+  project            Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  taskGroup          TaskGroup? @relation(fields: [taskGroupId], references: [id], onDelete: SetNull)
+  sessions           Session[]
+
+  @@index([userId])
+  @@index([projectId])
+  @@index([taskGroupId])
+}
+
+// ============================================================================
+// SESSION MODEL - Tracks Pomodoro sessions
+// ============================================================================
+model Session {
+  id          String      @id @default(uuid())
+  type        SessionType
+  duration    Int
+  startedAt   DateTime    @default(now())
+  endedAt     DateTime?
+  isCompleted Boolean     @default(false)
+
+  // Soft delete
+  isActive    Boolean     @default(true)
+  deletedAt   DateTime?
+
+  createdAt   DateTime    @default(now())
+
+  // Foreign keys
+  userId      String
+  taskId      String?
+
+  // Relations
+  user        User   @relation(fields: [userId], references: [id])
+  task        Task?  @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([taskId])
+}
+
+// Enum for session types
+enum SessionType {
+  FOCUS
+  SHORT_BREAK
+  LONG_BREAK
+}
+
+// ============================================================================
+// SETTINGS MODEL - User preferences (one per user)
+// ============================================================================
+model Settings {
+  id                     String   @id @default(uuid())
+  focusDuration          Int      @default(1500)
+  shortBreakDuration     Int      @default(300)
+  longBreakDuration      Int      @default(900)
+  sessionsUntilLongBreak Int      @default(4)
+  autoStartBreaks        Boolean  @default(false)
+  autoStartFocus         Boolean  @default(false)
+  notificationSound      Boolean  @default(true)
+
+  // Soft delete
+  isActive               Boolean  @default(true)
+  deletedAt              DateTime?
+
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  // Foreign key
+  userId                 String   @unique
+
+  // Relations
+  user                   User     @relation(fields: [userId], references: [id])
+}
