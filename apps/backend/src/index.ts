@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import morgan from "morgan";
 import { prisma } from "./lib/prisma";
 
 dotenv.config();
@@ -16,6 +17,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.use(morgan("dev"));
 
 // Health check route
 app.get("/api/health", (req, res) => {
