@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import { prisma } from "./lib/prisma";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 
@@ -34,7 +35,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.get("/api/db-test", async (req, res) => {
+app.get("/api/db-test", async (req, res, next) => {
   try {
     await prisma.$queryRaw`SELECT 1`;
     res.json({
@@ -42,15 +43,12 @@ app.get("/api/db-test", async (req, res) => {
       message: "Database connection is working!",
     });
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      message: "Database connection failed!",
-    });
+    next(error);
   }
 });
 
 // Create a user (test endpoint)
-app.post("/api/users", async (req, res) => {
+app.post("/api/users", async (req, res, next) => {
   try {
     const { email, name } = req.body;
 
@@ -73,16 +71,12 @@ app.post("/api/users", async (req, res) => {
       data: user,
     });
   } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({
-      status: "error",
-      message: "Failed to create user",
-    });
+    next(error);
   }
 });
 
 // Create a task (test endpoint)
-app.post("/api/tasks", async (req, res) => {
+app.post("/api/tasks", async (req, res, next) => {
   try {
     const { title, userId } = req.body;
 
@@ -107,13 +101,18 @@ app.post("/api/tasks", async (req, res) => {
       data: task,
     });
   } catch (error) {
-    console.error("Error creating task:", error);
-    res.status(500).json({
-      status: "error",
-      message: "Failed to create task",
-    });
+    next(error);
   }
 });
+
+app.use((req, res) => {
+  res.status(404).json({
+    status: "error",
+    message: `Route ${req.method} ${req.url} not found`,
+  });
+});
+
+app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
