@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "./lib/api";
+import CreateTaskForm from "./components/CreateTaskForm";
 
 function App() {
   const [backendStatus, setBackendStatus] = useState<string>("Checking...");
@@ -27,6 +28,7 @@ function App() {
           <h2 className="text-xl font-semibold mb-2">Backend Status:</h2>
           <p className="text-gray-700">{backendStatus}</p>
         </div>
+        <CreateTaskForm />
       </div>
     </>
   );
