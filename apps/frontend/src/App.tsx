@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+import { api } from "./lib/api";
+import CreateTaskForm from "./components/CreateTaskForm";
 
 function App() {
   const [backendStatus, setBackendStatus] = useState<string>("Checking...");
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/health")
-      .then((res) => res.json())
-      .then((data) => {
-        setBackendStatus(data.message);
+    api
+      .get("/api/health")
+      .then((res) => {
+        setBackendStatus(res.data.message);
       })
       .catch((err) => {
         setBackendStatus("Error: Cannot connect to backend");
@@ -26,6 +28,7 @@ function App() {
           <h2 className="text-xl font-semibold mb-2">Backend Status:</h2>
           <p className="text-gray-700">{backendStatus}</p>
         </div>
+        <CreateTaskForm />
       </div>
     </>
   );
