@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
+import { api } from "./lib/api";
 
 function App() {
   const [backendStatus, setBackendStatus] = useState<string>("Checking...");
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/health")
-      .then((res) => res.json())
-      .then((data) => {
-        setBackendStatus(data.message);
+    api
+      .get("/api/health")
+      .then((res) => {
+        setBackendStatus(res.data.message);
       })
       .catch((err) => {
         setBackendStatus("Error: Cannot connect to backend");
