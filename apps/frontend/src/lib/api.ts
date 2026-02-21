@@ -1,3 +1,4 @@
+// Axios instance configured for LetsFocus API
 import axios from "axios";
 
 export const api = axios.create({
