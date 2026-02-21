@@ -122,7 +122,7 @@ async function main() {
   console.log(`✅ Created ${tasks.count} tasks`);
 
   // Create user settings
-  const settings = await prisma.settings.create({
+  const _settings = await prisma.settings.create({
     data: {
       focusDuration: 1500,
       shortBreakDuration: 300,
