@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "./lib/api";
-import CreateTaskForm from "./components/CreateTaskForm";
+import Timer from "./feature/timer/Timer";
 
 function App() {
   const [backendStatus, setBackendStatus] = useState<string>("Checking...");
@@ -8,11 +8,11 @@ function App() {
   useEffect(() => {
     api
       .get("/api/health")
-      .then((res) => {
-        setBackendStatus(res.data.message);
+      .then(() => {
+        setBackendStatus("connected ✅");
       })
       .catch((err) => {
-        setBackendStatus("Error: Cannot connect to backend");
+        setBackendStatus("disconnected ❌");
         console.error(err);
       });
   }, []);
@@ -22,13 +22,8 @@ function App() {
       <div className="min-h-screen bg-[#FF6B6B] flex items-center justify-center flex-col gap-3">
         <div className="text-center">
           <h1 className="text-6xl font-bold text-white mb-4">LetsFocus</h1>
-          <p className="text-white text-xl">Your productivity companion</p>
+          <Timer />
         </div>
-        <div className="bg-white rounded-lg p-6 shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">Backend Status:</h2>
-          <p className="text-gray-700">{backendStatus}</p>
-        </div>
-        <CreateTaskForm />
       </div>
     </>
   );
