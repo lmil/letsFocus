@@ -33,7 +33,9 @@ function Timer() {
 
   function handleStart() {
     if (startTime !== null) return; // prevent double start
-    setStartTime(Date.now());
+    const currentNow = Date.now();
+    setNow(currentNow);
+    setStartTime(currentNow);
   }
 
   function handlePause() {
