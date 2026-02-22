@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const FOCUS_DURATION = 5 * 60 * 1000; // 25 menit dalam ms
+const FOCUS_DURATION = 25 * 60 * 1000; // 25 menit dalam ms
 
 function Timer() {
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -26,7 +26,7 @@ function Timer() {
       } else {
         setNow(currentNow);
       }
-    }, 1000);
+    }, 200);
 
     return () => clearInterval(interval);
   }, [startTime, accumulatedMs]);
