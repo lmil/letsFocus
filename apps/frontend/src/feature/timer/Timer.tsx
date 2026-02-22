@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const FOCUS_DURATION = 25 * 60 * 1000; // 25 menit dalam ms
+const FOCUS_DURATION = 5 * 60 * 1000; // 25 menit dalam ms
 
 function Timer() {
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -59,14 +59,61 @@ function Timer() {
     seconds,
   ).padStart(2, "0")}`;
 
-  return (
-    <div>
-      <h2>{display}</h2>
-      <p>Running: {String(isRunning)}</p>
+  const circumference = 2 * Math.PI * 112;
+  const progress = timeLeftMs / FOCUS_DURATION;
+  const dashOffset = circumference * (1 - progress);
 
-      <button onClick={handleStart}>Start</button>
-      <button onClick={handlePause}>Pause</button>
-      <button onClick={handleReset}>Reset</button>
+  return (
+    <div className="flex flex-col items-center justify-center gap-8">
+      <div className="relative flex items-center justify-center w-64 h-64">
+        <svg className="absolute w-full h-full -rotate-90">
+          <circle
+            cx="128"
+            cy="128"
+            r="112"
+            fill="none"
+            stroke="white"
+            strokeOpacity="0.2"
+            strokeWidth="12"
+          />
+          <circle
+            cx="128"
+            cy="128"
+            r="112"
+            fill="none"
+            stroke="white"
+            strokeWidth="12"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={dashOffset}
+          />
+        </svg>
+        <span className="text-white text-5xl font-bold tracking-widest">
+          {display}
+        </span>
+      </div>
+      <div className="flex gap-4">
+        <button
+          onClick={handleStart}
+          disabled={isRunning}
+          className="px-6 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+        >
+          Start
+        </button>
+        <button
+          onClick={handlePause}
+          disabled={!isRunning}
+          className="px-6 py-3 rounded-3xl bg-white/20 text-white font-bold text-sm tracking-wide disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+        >
+          Pause
+        </button>
+        <button
+          onClick={handleReset}
+          className="px-6 py-3 rounded-3xl bg-white/20 text-white font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }

@@ -23,7 +23,6 @@ function App() {
         <div className="text-center">
           <h1 className="text-6xl font-bold text-white mb-4">LetsFocus</h1>
           <Timer />
-          <p className="text-white/70">Backend: {backendStatus}</p>
         </div>
       </div>
     </>
