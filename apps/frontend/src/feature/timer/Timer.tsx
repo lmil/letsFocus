@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 type SessionType = "focus" | "shortBreak" | "longBreak";
 
 const DURATIONS: Record<SessionType, number> = {
+  // focus: 0.12 * 60 * 1000,
+  // shortBreak: 0.1 * 60 * 1000,
+  // longBreak: 0.2 * 60 * 1000,
   focus: 25 * 60 * 1000,
   shortBreak: 5 * 60 * 1000,
   longBreak: 15 * 60 * 1000,
@@ -29,16 +32,32 @@ function Timer() {
       const totalElapsed = accumulatedMs + (currentNow - startTime);
 
       if (totalElapsed >= duration) {
-        setAccumulatedMs(duration);
+        // setAccumulatedMs(duration);
         setStartTime(null);
         setNow(currentNow);
+        setAccumulatedMs(0);
+
+        if (sessionType === "focus") {
+          setCompletedFocusSessions((prev) => {
+            const next = prev + 1;
+            // setSessionType(next % 4 === 0 ? "longBreak" : "shortBreak");
+            if (next % 4 === 0) {
+              setSessionType("longBreak");
+              return 0;
+            }
+            setSessionType("shortBreak");
+            return next;
+          });
+        } else {
+          setSessionType("focus");
+        }
       } else {
         setNow(currentNow);
       }
     }, 200);
 
     return () => clearInterval(interval);
-  }, [startTime, accumulatedMs, duration]);
+  }, [startTime, accumulatedMs, duration, sessionType]);
 
   function handleStart() {
     if (startTime !== null) return; // prevent double start
@@ -144,7 +163,11 @@ function Timer() {
             {display}
           </span>
           <p className="text-white/70 text-sm font-medium tracking-wide">
-            Session {completedFocusSessions + 1} of 4
+            {sessionType === "focus"
+              ? `Session ${completedFocusSessions + 1} of 4`
+              : sessionType === "shortBreak"
+                ? `Short Break of Session ${completedFocusSessions}`
+                : `Long Break`}
           </p>
         </div>
       </div>
