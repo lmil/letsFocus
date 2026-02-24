@@ -3,12 +3,6 @@ import { Cog6ToothIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 type SessionType = "focus" | "shortBreak" | "longBreak";
 
-const DURATIONS: Record<SessionType, number> = {
-  focus: 0.12 * 60 * 1000, // 7
-  shortBreak: 0.05 * 60 * 1000, // 3
-  longBreak: 0.07 * 60 * 1000, // 4
-};
-
 type TimerSettings = {
   focusMinutes: number;
   shortBreakMinutes: number;
@@ -30,10 +24,16 @@ function Timer() {
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
+  const durations: Record<SessionType, number> = {
+    focus: settings.focusMinutes * 60 * 1000,
+    shortBreak: settings.shortBreakMinutes * 60 * 1000,
+    longBreak: settings.longBreakMinutes * 60 * 1000,
+  };
+
   // Derived values
   const isRunning = startTime !== null;
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
-  const duration = DURATIONS[sessionType];
+  const duration = durations[sessionType];
   const timeLeftMs = Math.max(0, duration - elapsedMs);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ function Timer() {
         if (sessionType === "focus") {
           setCompletedFocusSessions((prev) => {
             const next = prev + 1;
-            if (next % 4 === 0) {
+            if (next % settings.sessionsUntilLongBreak === 0) {
               setSessionType("longBreak");
               return 0;
             }
@@ -135,7 +135,7 @@ function Timer() {
                   </div>
                   <input
                     type="range"
-                    min={15}
+                    min={1}
                     max={60}
                     value={settings.focusMinutes}
                     onChange={(e) =>
@@ -181,7 +181,7 @@ function Timer() {
                   </div>
                   <input
                     type="range"
-                    min={10}
+                    min={1}
                     max={30}
                     value={settings.longBreakMinutes}
                     onChange={(e) =>
@@ -292,7 +292,7 @@ function Timer() {
           </span>
           <p className="text-white/70 text-sm font-medium tracking-wide">
             {sessionType === "focus"
-              ? `Session ${completedFocusSessions + 1} of 4`
+              ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
               : sessionType === "shortBreak"
                 ? completedFocusSessions === 0
                   ? `Short Break`
