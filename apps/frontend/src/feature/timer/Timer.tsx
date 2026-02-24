@@ -8,12 +8,25 @@ const DURATIONS: Record<SessionType, number> = {
   longBreak: 0.07 * 60 * 1000, // 4
 };
 
+type TimerSettings = {
+  focusMinutes: number;
+  shortBreakMinutes: number;
+  longBreakMinutes: number;
+  sessionsUntilLongBreak: number;
+};
+
 function Timer() {
   const [sessionType, setSessionType] = useState<SessionType>("focus");
   const [completedFocusSessions, setCompletedFocusSessions] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [accumulatedMs, setAccumulatedMs] = useState(0);
   const [now, setNow] = useState(() => Date.now());
+  const [settings, setSettings] = useState<TimerSettings>({
+    focusMinutes: 25,
+    shortBreakMinutes: 5,
+    longBreakMinutes: 15,
+    sessionsUntilLongBreak: 4,
+  });
 
   // Derived values
   const isRunning = startTime !== null;
