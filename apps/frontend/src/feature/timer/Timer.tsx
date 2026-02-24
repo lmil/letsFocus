@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { Cog6ToothIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 type SessionType = "focus" | "shortBreak" | "longBreak";
 
-const DURATIONS: Record<SessionType, number> = {
-  focus: 0.12 * 60 * 1000, // 7
-  shortBreak: 0.05 * 60 * 1000, // 3
-  longBreak: 0.07 * 60 * 1000, // 4
+type TimerSettings = {
+  focusMinutes: number;
+  shortBreakMinutes: number;
+  longBreakMinutes: number;
+  sessionsUntilLongBreak: number;
 };
 
 function Timer() {
@@ -14,11 +16,24 @@ function Timer() {
   const [startTime, setStartTime] = useState<number | null>(null);
   const [accumulatedMs, setAccumulatedMs] = useState(0);
   const [now, setNow] = useState(() => Date.now());
+  const [settings, setSettings] = useState<TimerSettings>({
+    focusMinutes: 25,
+    shortBreakMinutes: 5,
+    longBreakMinutes: 15,
+    sessionsUntilLongBreak: 4,
+  });
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const durations: Record<SessionType, number> = {
+    focus: settings.focusMinutes * 60 * 1000,
+    shortBreak: settings.shortBreakMinutes * 60 * 1000,
+    longBreak: settings.longBreakMinutes * 60 * 1000,
+  };
 
   // Derived values
   const isRunning = startTime !== null;
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
-  const duration = DURATIONS[sessionType];
+  const duration = durations[sessionType];
   const timeLeftMs = Math.max(0, duration - elapsedMs);
 
   useEffect(() => {
@@ -36,7 +51,7 @@ function Timer() {
         if (sessionType === "focus") {
           setCompletedFocusSessions((prev) => {
             const next = prev + 1;
-            if (next % 4 === 0) {
+            if (next % settings.sessionsUntilLongBreak === 0) {
               setSessionType("longBreak");
               return 0;
             }
@@ -52,7 +67,13 @@ function Timer() {
     }, 200);
 
     return () => clearInterval(interval);
-  }, [startTime, accumulatedMs, duration, sessionType]);
+  }, [
+    startTime,
+    accumulatedMs,
+    duration,
+    sessionType,
+    settings.sessionsUntilLongBreak,
+  ]);
 
   function handleStart() {
     if (startTime !== null) return; // prevent double start
@@ -88,7 +109,128 @@ function Timer() {
   const dashOffset = circumference * (1 - progress);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8">
+    <div className="relative flex flex-col items-center justify-center gap-8">
+      <div className="w-full flex justify-end">
+        <button
+          onClick={() => setIsSettingsOpen((prev) => !prev)}
+          className="p-2 text-white/60 hover:text-white transition-colors"
+        >
+          <Cog6ToothIcon className="w-6 h-6" />
+        </button>
+        {isSettingsOpen && (
+          <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center z-10">
+            <div className="bg-white rounded-2xl px-6 pt-6 pb-8 w-80 shadow-xl">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-gray-800 font-bold text-lg">
+                  Timer Settings
+                </h2>
+                <button
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <XMarkIcon className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">Focus</span>
+                    <span className="text-gray-400">
+                      {settings.focusMinutes} min
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={60}
+                    value={settings.focusMinutes}
+                    onChange={(e) => {
+                      setSettings((prev) => ({
+                        ...prev,
+                        focusMinutes: Number(e.target.value),
+                      }));
+                      handleReset();
+                    }}
+                    className="w-full accent-[#FF6B6B]"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">
+                      Short Break
+                    </span>
+                    <span className="text-gray-400">
+                      {settings.shortBreakMinutes} min
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={15}
+                    value={settings.shortBreakMinutes}
+                    onChange={(e) => {
+                      setSettings((prev) => ({
+                        ...prev,
+                        shortBreakMinutes: Number(e.target.value),
+                      }));
+                      handleReset();
+                    }}
+                    className="w-full accent-[#FF6B6B]"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">
+                      Long Break
+                    </span>
+                    <span className="text-gray-400">
+                      {settings.longBreakMinutes} min
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={30}
+                    value={settings.longBreakMinutes}
+                    onChange={(e) => {
+                      setSettings((prev) => ({
+                        ...prev,
+                        longBreakMinutes: Number(e.target.value),
+                      }));
+                      handleReset();
+                    }}
+                    className="w-full accent-[#FF6B6B]"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">
+                      Sessions until Long Break
+                    </span>
+                    <span className="text-gray-400">
+                      {settings.sessionsUntilLongBreak} sessions
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={10}
+                    value={settings.sessionsUntilLongBreak}
+                    onChange={(e) => {
+                      setSettings((prev) => ({
+                        ...prev,
+                        sessionsUntilLongBreak: Number(e.target.value),
+                      }));
+                      handleReset();
+                    }}
+                    className="w-full accent-[#FF6B6B]"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
       <div className="flex gap-2">
         <button
           onClick={() => {
@@ -160,7 +302,7 @@ function Timer() {
           </span>
           <p className="text-white/70 text-sm font-medium tracking-wide">
             {sessionType === "focus"
-              ? `Session ${completedFocusSessions + 1} of 4`
+              ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
               : sessionType === "shortBreak"
                 ? completedFocusSessions === 0
                   ? `Short Break`
