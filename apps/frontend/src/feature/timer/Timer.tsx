@@ -3,12 +3,9 @@ import { useEffect, useState } from "react";
 type SessionType = "focus" | "shortBreak" | "longBreak";
 
 const DURATIONS: Record<SessionType, number> = {
-  // focus: 0.12 * 60 * 1000,
-  // shortBreak: 0.1 * 60 * 1000,
-  // longBreak: 0.2 * 60 * 1000,
-  focus: 25 * 60 * 1000,
-  shortBreak: 5 * 60 * 1000,
-  longBreak: 15 * 60 * 1000,
+  focus: 0.12 * 60 * 1000, // 7
+  shortBreak: 0.05 * 60 * 1000, // 3
+  longBreak: 0.07 * 60 * 1000, // 4
 };
 
 function Timer() {
@@ -32,7 +29,6 @@ function Timer() {
       const totalElapsed = accumulatedMs + (currentNow - startTime);
 
       if (totalElapsed >= duration) {
-        // setAccumulatedMs(duration);
         setStartTime(null);
         setNow(currentNow);
         setAccumulatedMs(0);
@@ -40,7 +36,6 @@ function Timer() {
         if (sessionType === "focus") {
           setCompletedFocusSessions((prev) => {
             const next = prev + 1;
-            // setSessionType(next % 4 === 0 ? "longBreak" : "shortBreak");
             if (next % 4 === 0) {
               setSessionType("longBreak");
               return 0;
@@ -78,6 +73,7 @@ function Timer() {
     setStartTime(null);
     setAccumulatedMs(0);
     setNow(Date.now());
+    setCompletedFocusSessions(0);
   }
 
   const minutes = Math.floor(timeLeftMs / 1000 / 60);
@@ -166,31 +162,19 @@ function Timer() {
             {sessionType === "focus"
               ? `Session ${completedFocusSessions + 1} of 4`
               : sessionType === "shortBreak"
-                ? `Short Break of Session ${completedFocusSessions}`
+                ? completedFocusSessions === 0
+                  ? `Short Break`
+                  : `Short Break for Session ${completedFocusSessions}`
                 : `Long Break`}
           </p>
         </div>
       </div>
       <div className="flex gap-4">
         <button
-          onClick={handleStart}
-          disabled={isRunning}
-          className="px-6 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 transition-transform"
+          onClick={isRunning ? handlePause : handleStart}
+          className="px-8 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
         >
-          Start
-        </button>
-        <button
-          onClick={handlePause}
-          disabled={!isRunning}
-          className="px-6 py-3 rounded-3xl bg-white/20 text-white font-bold text-sm tracking-wide disabled:opacity-40 disabled:cursor-not-allowed hover:scale-105 transition-transform"
-        >
-          Pause
-        </button>
-        <button
-          onClick={handleReset}
-          className="px-6 py-3 rounded-3xl bg-white/20 text-white font-bold text-sm tracking-wide hover:scale-105 transition-transform"
-        >
-          Reset
+          {isRunning ? "Pause" : accumulatedMs > 0 ? "Resume" : "Start"}
         </button>
       </div>
     </div>
