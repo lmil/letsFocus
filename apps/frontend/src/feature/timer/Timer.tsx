@@ -67,7 +67,13 @@ function Timer() {
     }, 200);
 
     return () => clearInterval(interval);
-  }, [startTime, accumulatedMs, duration, sessionType]);
+  }, [
+    startTime,
+    accumulatedMs,
+    duration,
+    sessionType,
+    settings.sessionsUntilLongBreak,
+  ]);
 
   function handleStart() {
     if (startTime !== null) return; // prevent double start
@@ -138,12 +144,13 @@ function Timer() {
                     min={1}
                     max={60}
                     value={settings.focusMinutes}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSettings((prev) => ({
                         ...prev,
                         focusMinutes: Number(e.target.value),
-                      }))
-                    }
+                      }));
+                      handleReset();
+                    }}
                     className="w-full accent-[#FF6B6B]"
                   />
                 </div>
@@ -161,12 +168,13 @@ function Timer() {
                     min={1}
                     max={15}
                     value={settings.shortBreakMinutes}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSettings((prev) => ({
                         ...prev,
                         shortBreakMinutes: Number(e.target.value),
-                      }))
-                    }
+                      }));
+                      handleReset();
+                    }}
                     className="w-full accent-[#FF6B6B]"
                   />
                 </div>
@@ -184,12 +192,13 @@ function Timer() {
                     min={1}
                     max={30}
                     value={settings.longBreakMinutes}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSettings((prev) => ({
                         ...prev,
                         longBreakMinutes: Number(e.target.value),
-                      }))
-                    }
+                      }));
+                      handleReset();
+                    }}
                     className="w-full accent-[#FF6B6B]"
                   />
                 </div>
@@ -207,12 +216,13 @@ function Timer() {
                     min={1}
                     max={10}
                     value={settings.sessionsUntilLongBreak}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setSettings((prev) => ({
                         ...prev,
                         sessionsUntilLongBreak: Number(e.target.value),
-                      }))
-                    }
+                      }));
+                      handleReset();
+                    }}
                     className="w-full accent-[#FF6B6B]"
                   />
                 </div>
