@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Cog6ToothIcon } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 type SessionType = "focus" | "shortBreak" | "longBreak";
 
@@ -111,6 +111,25 @@ function Timer() {
         >
           <Cog6ToothIcon className="w-6 h-6" />
         </button>
+        {isSettingsOpen && (
+          <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center z-10">
+            <div className="bg-white rounded-2xl p-6 w-80 shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-gray-800 font-bold text-lg">
+                  Timer Settings
+                </h2>
+                <button
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <XMarkIcon className="w-5 h-5" />
+                </button>
+              </div>
+
+              <p className="text-gray-400 text-sm">Sliders coming soon...</p>
+            </div>
+          </div>
+        )}
       </div>
       <div className="flex gap-2">
         <button
