@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 
 type SessionType = "focus" | "shortBreak" | "longBreak";
 
@@ -27,6 +28,7 @@ function Timer() {
     longBreakMinutes: 15,
     sessionsUntilLongBreak: 4,
   });
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Derived values
   const isRunning = startTime !== null;
@@ -101,7 +103,15 @@ function Timer() {
   const dashOffset = circumference * (1 - progress);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-8">
+    <div className="relative flex flex-col items-center justify-center gap-8">
+      <div className="w-full flex justify-end">
+        <button
+          onClick={() => setIsSettingsOpen((prev) => !prev)}
+          className="p-2 text-white/60 hover:text-white transition-colors"
+        >
+          <Cog6ToothIcon className="w-6 h-6" />
+        </button>
+      </div>
       <div className="flex gap-2">
         <button
           onClick={() => {
