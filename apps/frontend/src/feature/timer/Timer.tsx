@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { Cog6ToothIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Cog6ToothIcon,
+  XMarkIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/outline";
 
 type SessionType = "focus" | "shortBreak" | "longBreak";
 
@@ -124,12 +128,29 @@ function Timer() {
                 <h2 className="text-gray-800 font-bold text-lg">
                   Timer Settings
                 </h2>
-                <button
-                  onClick={() => setIsSettingsOpen(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <XMarkIcon className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    title="Reset to defaults"
+                    onClick={() =>
+                      setSettings({
+                        focusMinutes: 25,
+                        shortBreakMinutes: 5,
+                        longBreakMinutes: 15,
+                        sessionsUntilLongBreak: 4,
+                      })
+                    }
+                    className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <ArrowPathIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    title="Close"
+                    onClick={() => setIsSettingsOpen(false)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-1">
