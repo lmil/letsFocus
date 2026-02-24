@@ -113,8 +113,8 @@ function Timer() {
         </button>
         {isSettingsOpen && (
           <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center z-10">
-            <div className="bg-white rounded-2xl p-6 w-80 shadow-xl">
-              <div className="flex items-center justify-between mb-4">
+            <div className="bg-white rounded-2xl px-6 pt-6 pb-8 w-80 shadow-xl">
+              <div className="flex items-center justify-between mb-8">
                 <h2 className="text-gray-800 font-bold text-lg">
                   Timer Settings
                 </h2>
@@ -125,8 +125,98 @@ function Timer() {
                   <XMarkIcon className="w-5 h-5" />
                 </button>
               </div>
-
-              <p className="text-gray-400 text-sm">Sliders coming soon...</p>
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">Focus</span>
+                    <span className="text-gray-400">
+                      {settings.focusMinutes} min
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={15}
+                    max={60}
+                    value={settings.focusMinutes}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        focusMinutes: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full accent-[#FF6B6B]"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">
+                      Short Break
+                    </span>
+                    <span className="text-gray-400">
+                      {settings.shortBreakMinutes} min
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={15}
+                    value={settings.shortBreakMinutes}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        shortBreakMinutes: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full accent-[#FF6B6B]"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">
+                      Long Break
+                    </span>
+                    <span className="text-gray-400">
+                      {settings.longBreakMinutes} min
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={10}
+                    max={30}
+                    value={settings.longBreakMinutes}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        longBreakMinutes: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full accent-[#FF6B6B]"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600 font-medium">
+                      Sessions until Long Break
+                    </span>
+                    <span className="text-gray-400">
+                      {settings.sessionsUntilLongBreak} sessions
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={10}
+                    value={settings.sessionsUntilLongBreak}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        sessionsUntilLongBreak: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full accent-[#FF6B6B]"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )}
