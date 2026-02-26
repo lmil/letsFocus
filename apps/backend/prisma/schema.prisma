@@ -145,6 +145,7 @@ model Session {
   type        SessionType
   duration    Int
   startedAt   DateTime    @default(now())
+  pausedAt    DateTime?
   endedAt     DateTime?
   isCompleted Boolean     @default(false)
 
