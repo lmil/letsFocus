@@ -81,3 +81,29 @@ export async function resumeSession(
     next(error);
   }
 }
+
+export async function stopSession(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params as { id: string };
+    const { endedAt, isCompleted, actualDuration } = req.body;
+
+    const session = await prisma.session.update({
+      where: { id },
+      data: { pausedAt: null },
+    });
+
+    res.json({
+      status: "success",
+      data: {
+        sessionId: session.id,
+        resumeAt: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
