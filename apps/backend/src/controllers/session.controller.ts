@@ -30,3 +30,54 @@ export async function startSession(
     next(error);
   }
 }
+
+export async function pauseSession(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params as { id: string };
+    const { pausedAt } = req.body;
+
+    const session = await prisma.session.update({
+      where: { id },
+      data: { pausedAt: new Date(pausedAt) },
+    });
+
+    res.json({
+      status: "success",
+      data: {
+        sessionId: session.id,
+        pausedAt: session.pausedAt,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function resumeSession(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params as { id: string };
+
+    const session = await prisma.session.update({
+      where: { id },
+      data: { pausedAt: null },
+    });
+
+    res.json({
+      status: "success",
+      data: {
+        sessionId: session.id,
+        resumeAt: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
