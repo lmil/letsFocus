@@ -144,7 +144,9 @@ model Session {
   id          String      @id @default(uuid())
   type        SessionType
   duration    Int
+  actualDuration  Int?
   startedAt   DateTime    @default(now())
+  pausedAt    DateTime?
   endedAt     DateTime?
   isCompleted Boolean     @default(false)
 

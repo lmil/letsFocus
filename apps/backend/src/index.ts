@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { prisma } from "./lib/prisma";
 import { errorHandler } from "./middleware/errorHandler";
+import sessionRoutes from "./routes/session.routes";
 
 dotenv.config();
 
@@ -47,63 +48,7 @@ app.get("/api/db-test", async (req, res, next) => {
   }
 });
 
-// Create a user (test endpoint)
-app.post("/api/users", async (req, res, next) => {
-  try {
-    const { email, name } = req.body;
-
-    if (!email) {
-      return res.status(400).json({
-        status: "error",
-        message: "Email is required",
-      });
-    }
-
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-      },
-    });
-
-    res.status(201).json({
-      status: "success",
-      data: user,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// Create a task (test endpoint)
-app.post("/api/tasks", async (req, res, next) => {
-  try {
-    const { title, userId } = req.body;
-
-    // Simple validation
-    if (!title || !userId) {
-      return res.status(400).json({
-        status: "error",
-        message: "Title and userId are required",
-      });
-    }
-
-    // Create task in database
-    const task = await prisma.task.create({
-      data: {
-        title,
-        userId,
-      },
-    });
-
-    res.status(201).json({
-      status: "success",
-      data: task,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+app.use("/api/sessions", sessionRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
