@@ -91,17 +91,51 @@ export async function stopSession(
     const { id } = req.params as { id: string };
     const { endedAt, isCompleted, actualDuration } = req.body;
 
-    const session = await prisma.session.update({
+    const sesssion = await prisma.session.update({
       where: { id },
-      data: { pausedAt: null },
+      data: {
+        endedAt: new Date(endedAt),
+        isCompleted,
+        actualDuration,
+      },
     });
 
     res.json({
       status: "success",
       data: {
-        sessionId: session.id,
-        resumeAt: new Date().toISOString(),
+        sessionId: sesssion.id,
+        endAt: sesssion.endedAt,
+        isCompleted: sesssion.isCompleted,
+        actualDuration: sesssion.actualDuration,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getSession(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { id } = req.params as { id: string };
+    const session = await prisma.session.findUnique({
+      where: { id },
+    });
+
+    if (!session) {
+      res.status(404).json({
+        status: "error",
+        message: "Session not found",
+      });
+      return;
+    }
+
+    res.json({
+      status: "success",
+      data: session,
     });
   } catch (error) {
     next(error);
