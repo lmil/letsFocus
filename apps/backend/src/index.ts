@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { prisma } from "./lib/prisma";
 import { errorHandler } from "./middleware/errorHandler";
+import sessionRoutes from "./routes/session.routes";
 
 dotenv.config();
 
@@ -46,6 +47,8 @@ app.get("/api/db-test", async (req, res, next) => {
     next(error);
   }
 });
+
+app.use("/api/sessions", sessionRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
