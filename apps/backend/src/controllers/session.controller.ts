@@ -74,7 +74,7 @@ export async function resumeSession(
       status: "success",
       data: {
         sessionId: session.id,
-        resumeAt: new Date().toISOString(),
+        resumedAt: new Date().toISOString(),
       },
     });
   } catch (error) {
@@ -104,7 +104,7 @@ export async function stopSession(
       status: "success",
       data: {
         sessionId: sesssion.id,
-        endAt: sesssion.endedAt,
+        endedAt: sesssion.endedAt,
         isCompleted: sesssion.isCompleted,
         actualDuration: sesssion.actualDuration,
       },
