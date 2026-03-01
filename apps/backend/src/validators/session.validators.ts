@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { duration } from "zod/v4/classic/iso.cjs";
 
 export const startSessionSchema = z.object({
   type: z.enum(["FOCUS", "SHORT_BREAK", "LONG_BREAK"]),
