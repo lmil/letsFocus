@@ -11,7 +11,7 @@ export const createTaskSchema = z.object({
 
 export const updateTaskSchema = createTaskSchema.partial();
 
-export const taksIdSchema = z.object({
+export const taskIdSchema = z.object({
   id: z.uuid(),
 });
 
