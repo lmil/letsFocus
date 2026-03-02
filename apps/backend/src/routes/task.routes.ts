@@ -26,7 +26,7 @@ function validate<T extends ZodType>(
       res.status(400).json({ status: "error", issues: result.error.issues });
       return;
     }
-    req[source] = result.data;
+    if (source !== "query") req[source] = result.data;
     next();
   };
 }
