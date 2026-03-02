@@ -26,7 +26,16 @@ function validate<T extends ZodType>(
       res.status(400).json({ status: "error", issues: result.error.issues });
       return;
     }
-    if (source !== "query") req[source] = result.data;
+    if (source === "query") {
+      Object.defineProperty(req, "query", {
+        value: result.data,
+        writable: true,
+        configurable: true,
+      });
+    } else {
+      req[source] = result.data;
+    }
+
     next();
   };
 }
