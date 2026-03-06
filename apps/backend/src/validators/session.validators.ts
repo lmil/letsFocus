@@ -19,3 +19,7 @@ export const stopSessionSchema = z.object({
   isCompleted: z.boolean(),
   actualDuration: z.number().int().min(1),
 });
+
+export const completeSesssionSchema = z.object({
+  body: z.object({}),
+});

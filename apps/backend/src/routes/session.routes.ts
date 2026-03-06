@@ -6,12 +6,14 @@ import {
   resumeSession,
   stopSession,
   getSession,
+  completeSession,
 } from "../controllers/session.controller";
 import {
   startSessionSchema,
   pauseSessionSchema,
   resumeSessionSchema,
   stopSessionSchema,
+  completeSesssionSchema,
 } from "../validators/session.validators";
 
 const router = Router();
@@ -36,6 +38,11 @@ router.post("/start", validate(startSessionSchema), startSession);
 router.patch("/:id/pause", validate(pauseSessionSchema), pauseSession);
 router.patch("/:id/resume", validate(resumeSessionSchema), resumeSession);
 router.patch("/:id/stop", validate(stopSessionSchema), stopSession);
+router.patch(
+  "/:id/complete",
+  validate(completeSesssionSchema),
+  completeSession,
+);
 router.get("/:id", getSession);
 
 export default router;
