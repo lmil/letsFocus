@@ -178,7 +178,29 @@ export async function completeSession(
       },
     });
 
-    res.json({ status: "success", data: { session: updatedSession } });
+    let updatedTask = null;
+    if (session.type === "FOCUS" && session.taskId) {
+      updatedTask = await prisma.task.update({
+        where: { id: session.taskId },
+        data: {
+          completedSessions: { increment: 1 },
+        },
+      });
+
+      if (updatedTask.completedSessions >= updatedTask.estimatedSessions) {
+        updatedTask = await prisma.task.update({
+          where: { id: session.taskId },
+          data: {
+            isCompleted: true,
+          },
+        });
+      }
+    }
+
+    res.json({
+      status: "success",
+      data: { session: updatedSession, task: updatedTask },
+    });
   } catch (error) {
     next(error);
   }
