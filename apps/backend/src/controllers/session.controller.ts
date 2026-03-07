@@ -146,3 +146,40 @@ export async function getSession(
     next(error);
   }
 }
+
+export async function completeSession(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const id = req.params.id as string;
+    const session = await prisma.session.findFirst({
+      where: { id, userId: HARDCODED_USER_ID, isActive: true },
+    });
+
+    if (!session) {
+      res.status(404).json({ status: "error", message: "Session not found" });
+      return;
+    }
+
+    const now = new Date();
+    const actualDuration = Math.round(
+      (now.getTime() - session.startedAt.getTime()) / 1000,
+    );
+
+    const updatedSession = await prisma.session.update({
+      where: { id },
+      data: {
+        isCompleted: true,
+        actualDuration,
+        endedAt: now,
+        isActive: false,
+      },
+    });
+
+    res.json({ status: "success", data: { session: updatedSession } });
+  } catch (error) {
+    next(error);
+  }
+}
