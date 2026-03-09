@@ -197,9 +197,27 @@ export async function completeSession(
       }
     }
 
+    let nextSessionType: "FOCUS" | "SHORT_BREAK" | "LONG_BREAK" = "FOCUS";
+    if (session.type === "FOCUS") {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+
+      const completedFocusCount = await prisma.session.count({
+        where: {
+          userId: HARDCODED_USER_ID,
+          type: "FOCUS",
+          isCompleted: true,
+          startedAt: { gte: todayStart },
+        },
+      });
+
+      nextSessionType =
+        completedFocusCount % 4 === 0 ? "LONG_BREAK" : "SHORT_BREAK";
+    }
+
     res.json({
       status: "success",
-      data: { session: updatedSession, task: updatedTask },
+      data: { session: updatedSession, task: updatedTask, nextSessionType },
     });
   } catch (error) {
     next(error);
