@@ -27,6 +27,7 @@ function Timer() {
     sessionsUntilLongBreak: 4,
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   const durations: Record<SessionType, number> = {
     focus: settings.focusMinutes * 60 * 1000,
