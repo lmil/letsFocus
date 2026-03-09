@@ -15,9 +15,9 @@ export const resumeSessionSchema = z.object({
 });
 
 export const stopSessionSchema = z.object({
-  body: z.object({}),
+  body: z.object({}).optional(),
 });
 
 export const completeSesssionSchema = z.object({
-  body: z.object({}),
+  body: z.object({}).optional(),
 });
