@@ -12,8 +12,6 @@ import {
   startSessionSchema,
   pauseSessionSchema,
   resumeSessionSchema,
-  stopSessionSchema,
-  completeSesssionSchema,
 } from "../validators/session.validators";
 
 const router = Router();
