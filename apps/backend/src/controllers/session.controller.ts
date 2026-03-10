@@ -9,13 +9,14 @@ export async function startSession(
   next: NextFunction,
 ) {
   try {
-    const { type, duration, taskId } = req.body;
+    const { type, duration, taskId, startedAt } = req.body;
     const session = await prisma.session.create({
       data: {
         type,
         duration,
         taskId: taskId ?? null,
         userId: HARDCODED_USER_ID,
+        startedAt: new Date(startedAt),
       },
     });
 

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
+import { startSession } from "../../services/session.service";
+import type { SessionType } from "../../services/session.service";
+import { useMutation } from "@tanstack/react-query";
 import {
   Cog6ToothIcon,
   XMarkIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
-
-type SessionType = "focus" | "shortBreak" | "longBreak";
 
 type TimerSettings = {
   focusMinutes: number;
@@ -15,7 +16,7 @@ type TimerSettings = {
 };
 
 function Timer() {
-  const [sessionType, setSessionType] = useState<SessionType>("focus");
+  const [sessionType, setSessionType] = useState<SessionType>("FOCUS");
   const [completedFocusSessions, setCompletedFocusSessions] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [accumulatedMs, setAccumulatedMs] = useState(0);
@@ -30,10 +31,19 @@ function Timer() {
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   const durations: Record<SessionType, number> = {
-    focus: settings.focusMinutes * 60 * 1000,
-    shortBreak: settings.shortBreakMinutes * 60 * 1000,
-    longBreak: settings.longBreakMinutes * 60 * 1000,
+    FOCUS: settings.focusMinutes * 60 * 1000,
+    SHORT_BREAK: settings.shortBreakMinutes * 60 * 1000,
+    LONG_BREAK: settings.longBreakMinutes * 60 * 1000,
   };
+
+  const startSessionMutation = useMutation({
+    mutationFn: (startedAt: string) =>
+      startSession({
+        type: sessionType,
+        duration: durations[sessionType] / 1000,
+        startedAt,
+      }),
+  });
 
   // Derived values
   const isRunning = startTime !== null;
@@ -53,18 +63,18 @@ function Timer() {
         setNow(currentNow);
         setAccumulatedMs(0);
 
-        if (sessionType === "focus") {
+        if (sessionType === "FOCUS") {
           setCompletedFocusSessions((prev) => {
             const next = prev + 1;
             if (next % settings.sessionsUntilLongBreak === 0) {
-              setSessionType("longBreak");
+              setSessionType("LONG_BREAK");
               return 0;
             }
-            setSessionType("shortBreak");
+            setSessionType("SHORT_BREAK");
             return next;
           });
         } else {
-          setSessionType("focus");
+          setSessionType("FOCUS");
         }
       } else {
         setNow(currentNow);
@@ -80,11 +90,16 @@ function Timer() {
     settings.sessionsUntilLongBreak,
   ]);
 
-  function handleStart() {
+  async function handleStart() {
     if (startTime !== null) return; // prevent double start
+
     const currentNow = Date.now();
     setNow(currentNow);
     setStartTime(currentNow);
+    const response = await startSessionMutation.mutateAsync(
+      new Date(currentNow).toISOString(),
+    );
+    setSessionId(response.data.sessionId);
   }
 
   function handlePause() {
@@ -256,11 +271,11 @@ function Timer() {
       <div className="flex gap-2">
         <button
           onClick={() => {
-            setSessionType("focus");
+            setSessionType("FOCUS");
             handleReset();
           }}
           className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "focus"
+            sessionType === "FOCUS"
               ? "bg-white text-[#FF6B6B]"
               : "bg-white/20 text-white"
           }`}
@@ -269,11 +284,11 @@ function Timer() {
         </button>
         <button
           onClick={() => {
-            setSessionType("shortBreak");
+            setSessionType("SHORT_BREAK");
             handleReset();
           }}
           className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "shortBreak"
+            sessionType === "SHORT_BREAK"
               ? "bg-white text-[#FF6B6B]"
               : "bg-white/20 text-white"
           }`}
@@ -282,11 +297,11 @@ function Timer() {
         </button>
         <button
           onClick={() => {
-            setSessionType("longBreak");
+            setSessionType("LONG_BREAK");
             handleReset();
           }}
           className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "longBreak"
+            sessionType === "LONG_BREAK"
               ? "bg-white text-[#FF6B6B]"
               : "bg-white/20 text-white"
           }`}
@@ -323,9 +338,9 @@ function Timer() {
             {display}
           </span>
           <p className="text-white/70 text-sm font-medium tracking-wide">
-            {sessionType === "focus"
+            {sessionType === "FOCUS"
               ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
-              : sessionType === "shortBreak"
+              : sessionType === "SHORT_BREAK"
                 ? completedFocusSessions === 0
                   ? `Short Break`
                   : `Short Break for Session ${completedFocusSessions}`
