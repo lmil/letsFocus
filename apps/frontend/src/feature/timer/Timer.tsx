@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { startSession } from "../../services/session.service";
+import {
+  startSession,
+  pauseSession,
+  resumeSession,
+} from "../../services/session.service";
 import type { SessionType } from "../../services/session.service";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -43,6 +47,14 @@ function Timer() {
         duration: durations[sessionType] / 1000,
         startedAt,
       }),
+  });
+
+  const pauseSessionMutation = useMutation({
+    mutationFn: () => pauseSession(sessionId!),
+  });
+
+  const resumeSessionMutation = useMutation({
+    mutationFn: () => resumeSession(sessionId!),
   });
 
   // Derived values
@@ -102,12 +114,21 @@ function Timer() {
     setSessionId(response.data.sessionId);
   }
 
-  function handlePause() {
+  async function handlePause() {
     if (startTime === null) return;
 
     const elapsedSinceStart = Date.now() - startTime;
     setAccumulatedMs((prev) => prev + elapsedSinceStart);
     setStartTime(null);
+    await pauseSessionMutation.mutateAsync();
+  }
+
+  async function handleResume() {
+    if (startTime !== null) return;
+    const currentNow = Date.now();
+    setNow(currentNow);
+    setStartTime(currentNow);
+    await resumeSessionMutation.mutateAsync();
   }
 
   function handleReset() {
@@ -350,7 +371,13 @@ function Timer() {
       </div>
       <div className="flex gap-4">
         <button
-          onClick={isRunning ? handlePause : handleStart}
+          onClick={
+            isRunning
+              ? handlePause
+              : accumulatedMs > 0
+                ? handleResume
+                : handleStart
+          }
           className="px-8 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
         >
           {isRunning ? "Pause" : accumulatedMs > 0 ? "Resume" : "Start"}

@@ -41,11 +41,15 @@ export async function startSession(
 }
 
 export async function pauseSession(sessionId: string): Promise<void> {
-  await api.patch(`/api/sessions/${sessionId}/pause`);
+  await api.patch(`/api/sessions/${sessionId}/pause`, {
+    pausedAt: new Date().toISOString(),
+  });
 }
 
 export async function resumeSession(sessionId: string): Promise<void> {
-  await api.patch(`/api/sessions/${sessionId}/resume`);
+  await api.patch(`/api/sessions/${sessionId}/resume`, {
+    resumedAt: new Date().toISOString(),
+  });
 }
 
 export async function stopSession(sessionId: string): Promise<void> {
