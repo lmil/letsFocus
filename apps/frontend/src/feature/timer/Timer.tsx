@@ -3,6 +3,7 @@ import {
   startSession,
   pauseSession,
   resumeSession,
+  stopSession,
 } from "../../services/session.service";
 import type { SessionType } from "../../services/session.service";
 import { useMutation } from "@tanstack/react-query";
@@ -49,14 +50,17 @@ function Timer() {
       }),
   });
 
-  const pauseSessionMutation = useMutation({
-    mutationFn: () => pauseSession(sessionId!),
+  const pauseSessionMutation = useMutation<void, Error, string>({
+    mutationFn: (id: string) => pauseSession(id),
   });
 
-  const resumeSessionMutation = useMutation({
-    mutationFn: () => resumeSession(sessionId!),
+  const resumeSessionMutation = useMutation<void, Error, string>({
+    mutationFn: (id: string) => resumeSession(id),
   });
 
+  const stopSessionMutation = useMutation<void, Error, string>({
+    mutationFn: (id: string) => stopSession(id),
+  });
   // Derived values
   const isRunning = startTime !== null;
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
@@ -115,20 +119,32 @@ function Timer() {
   }
 
   async function handlePause() {
-    if (startTime === null) return;
+    if (startTime === null || sessionId === null) return;
 
+    const currentSessionId = sessionId;
     const elapsedSinceStart = Date.now() - startTime;
     setAccumulatedMs((prev) => prev + elapsedSinceStart);
     setStartTime(null);
-    await pauseSessionMutation.mutateAsync();
+    await pauseSessionMutation.mutateAsync(currentSessionId);
   }
 
   async function handleResume() {
-    if (startTime !== null) return;
+    if (startTime !== null || sessionId === null) return;
+    const currentSessionId = sessionId;
     const currentNow = Date.now();
     setNow(currentNow);
     setStartTime(currentNow);
-    await resumeSessionMutation.mutateAsync();
+    await resumeSessionMutation.mutateAsync(currentSessionId);
+  }
+
+  async function handleStop() {
+    if (sessionId === null) return;
+    const currentSessionId = sessionId;
+    setStartTime(null);
+    setAccumulatedMs(0);
+    setNow(Date.now());
+    setSessionId(null);
+    await stopSessionMutation.mutateAsync(currentSessionId);
   }
 
   function handleReset() {
@@ -382,6 +398,14 @@ function Timer() {
         >
           {isRunning ? "Pause" : accumulatedMs > 0 ? "Resume" : "Start"}
         </button>
+        {(isRunning || accumulatedMs > 0) && (
+          <button
+            onClick={handleStop}
+            className="px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+          >
+            Stop
+          </button>
+        )}
       </div>
     </div>
   );
