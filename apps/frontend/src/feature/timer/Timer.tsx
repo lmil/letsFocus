@@ -1,11 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   startSession,
   pauseSession,
   resumeSession,
   stopSession,
+  completeSession,
 } from "../../services/session.service";
-import type { SessionType } from "../../services/session.service";
+import type {
+  CompleteSessionResponse,
+  SessionType,
+} from "../../services/session.service";
 import { useMutation } from "@tanstack/react-query";
 import {
   Cog6ToothIcon,
@@ -61,6 +65,23 @@ function Timer() {
   const stopSessionMutation = useMutation<void, Error, string>({
     mutationFn: (id: string) => stopSession(id),
   });
+
+  const completeSessionMutation = useMutation<
+    CompleteSessionResponse,
+    Error,
+    string
+  >({
+    mutationFn: (id: string) => completeSession(id),
+  });
+
+  const sessionIdRef = useRef<string | null>(null);
+  const completeSessionRef = useRef(completeSessionMutation.mutateAsync);
+
+  useEffect(() => {
+    sessionIdRef.current = sessionId;
+    completeSessionRef.current = completeSessionMutation.mutateAsync;
+  });
+
   // Derived values
   const isRunning = startTime !== null;
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
@@ -79,18 +100,13 @@ function Timer() {
         setNow(currentNow);
         setAccumulatedMs(0);
 
-        if (sessionType === "FOCUS") {
-          setCompletedFocusSessions((prev) => {
-            const next = prev + 1;
-            if (next % settings.sessionsUntilLongBreak === 0) {
-              setSessionType("LONG_BREAK");
-              return 0;
-            }
-            setSessionType("SHORT_BREAK");
-            return next;
+        const currentSessionId = sessionIdRef.current;
+        setSessionId(null);
+
+        if (currentSessionId) {
+          completeSessionRef.current(currentSessionId).then((response) => {
+            setSessionType(response.data.nextSessionType);
           });
-        } else {
-          setSessionType("FOCUS");
         }
       } else {
         setNow(currentNow);
