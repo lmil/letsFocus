@@ -34,33 +34,33 @@ export async function startSession(
   payload: StartSessionPayload,
 ): Promise<StartSessionResponse> {
   const response = await api.post<StartSessionResponse>(
-    "/api/sessions/start",
+    "/sessions/start",
     payload,
   );
   return response.data;
 }
 
 export async function pauseSession(sessionId: string): Promise<void> {
-  await api.patch(`/api/sessions/${sessionId}/pause`, {
+  await api.patch(`/sessions/${sessionId}/pause`, {
     pausedAt: new Date().toISOString(),
   });
 }
 
 export async function resumeSession(sessionId: string): Promise<void> {
-  await api.patch(`/api/sessions/${sessionId}/resume`, {
+  await api.patch(`/sessions/${sessionId}/resume`, {
     resumedAt: new Date().toISOString(),
   });
 }
 
 export async function stopSession(sessionId: string): Promise<void> {
-  await api.patch(`/api/sessions/${sessionId}/stop`);
+  await api.patch(`/sessions/${sessionId}/stop`);
 }
 
 export async function completeSession(
   sessionId: string,
 ): Promise<CompleteSessionResponse> {
   const response = await api.patch<CompleteSessionResponse>(
-    `/api/sessions/${sessionId}/complete`,
+    `/sessions/${sessionId}/complete`,
   );
   return response.data;
 }
