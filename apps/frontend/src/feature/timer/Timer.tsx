@@ -1,11 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  startSession,
+  pauseSession,
+  resumeSession,
+  stopSession,
+  completeSession,
+} from "../../services/session.service";
+import type {
+  CompleteSessionResponse,
+  SessionType,
+} from "../../services/session.service";
+import { useMutation } from "@tanstack/react-query";
 import {
   Cog6ToothIcon,
   XMarkIcon,
   ArrowPathIcon,
 } from "@heroicons/react/24/outline";
-
-type SessionType = "focus" | "shortBreak" | "longBreak";
 
 type TimerSettings = {
   focusMinutes: number;
@@ -15,7 +25,7 @@ type TimerSettings = {
 };
 
 function Timer() {
-  const [sessionType, setSessionType] = useState<SessionType>("focus");
+  const [sessionType, setSessionType] = useState<SessionType>("FOCUS");
   const [completedFocusSessions, setCompletedFocusSessions] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [accumulatedMs, setAccumulatedMs] = useState(0);
@@ -27,12 +37,50 @@ function Timer() {
     sessionsUntilLongBreak: 4,
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   const durations: Record<SessionType, number> = {
-    focus: settings.focusMinutes * 60 * 1000,
-    shortBreak: settings.shortBreakMinutes * 60 * 1000,
-    longBreak: settings.longBreakMinutes * 60 * 1000,
+    FOCUS: settings.focusMinutes * 60 * 1000,
+    SHORT_BREAK: settings.shortBreakMinutes * 60 * 1000,
+    LONG_BREAK: settings.longBreakMinutes * 60 * 1000,
   };
+
+  const startSessionMutation = useMutation({
+    mutationFn: (startedAt: string) =>
+      startSession({
+        type: sessionType,
+        duration: durations[sessionType] / 1000,
+        startedAt,
+      }),
+  });
+
+  const pauseSessionMutation = useMutation<void, Error, string>({
+    mutationFn: (id: string) => pauseSession(id),
+  });
+
+  const resumeSessionMutation = useMutation<void, Error, string>({
+    mutationFn: (id: string) => resumeSession(id),
+  });
+
+  const stopSessionMutation = useMutation<void, Error, string>({
+    mutationFn: (id: string) => stopSession(id),
+  });
+
+  const completeSessionMutation = useMutation<
+    CompleteSessionResponse,
+    Error,
+    string
+  >({
+    mutationFn: (id: string) => completeSession(id),
+  });
+
+  const sessionIdRef = useRef<string | null>(null);
+  const completeSessionRef = useRef(completeSessionMutation.mutateAsync);
+
+  useEffect(() => {
+    sessionIdRef.current = sessionId;
+    completeSessionRef.current = completeSessionMutation.mutateAsync;
+  });
 
   // Derived values
   const isRunning = startTime !== null;
@@ -52,18 +100,13 @@ function Timer() {
         setNow(currentNow);
         setAccumulatedMs(0);
 
-        if (sessionType === "focus") {
-          setCompletedFocusSessions((prev) => {
-            const next = prev + 1;
-            if (next % settings.sessionsUntilLongBreak === 0) {
-              setSessionType("longBreak");
-              return 0;
-            }
-            setSessionType("shortBreak");
-            return next;
+        const currentSessionId = sessionIdRef.current;
+        setSessionId(null);
+
+        if (currentSessionId) {
+          completeSessionRef.current(currentSessionId).then((response) => {
+            setSessionType(response.data.nextSessionType);
           });
-        } else {
-          setSessionType("focus");
         }
       } else {
         setNow(currentNow);
@@ -79,19 +122,45 @@ function Timer() {
     settings.sessionsUntilLongBreak,
   ]);
 
-  function handleStart() {
+  async function handleStart() {
     if (startTime !== null) return; // prevent double start
+
     const currentNow = Date.now();
     setNow(currentNow);
     setStartTime(currentNow);
+    const response = await startSessionMutation.mutateAsync(
+      new Date(currentNow).toISOString(),
+    );
+    setSessionId(response.data.sessionId);
   }
 
-  function handlePause() {
-    if (startTime === null) return;
+  async function handlePause() {
+    if (startTime === null || sessionId === null) return;
 
+    const currentSessionId = sessionId;
     const elapsedSinceStart = Date.now() - startTime;
     setAccumulatedMs((prev) => prev + elapsedSinceStart);
     setStartTime(null);
+    await pauseSessionMutation.mutateAsync(currentSessionId);
+  }
+
+  async function handleResume() {
+    if (startTime !== null || sessionId === null) return;
+    const currentSessionId = sessionId;
+    const currentNow = Date.now();
+    setNow(currentNow);
+    setStartTime(currentNow);
+    await resumeSessionMutation.mutateAsync(currentSessionId);
+  }
+
+  async function handleStop() {
+    if (sessionId === null) return;
+    const currentSessionId = sessionId;
+    setStartTime(null);
+    setAccumulatedMs(0);
+    setNow(Date.now());
+    setSessionId(null);
+    await stopSessionMutation.mutateAsync(currentSessionId);
   }
 
   function handleReset() {
@@ -255,11 +324,11 @@ function Timer() {
       <div className="flex gap-2">
         <button
           onClick={() => {
-            setSessionType("focus");
+            setSessionType("FOCUS");
             handleReset();
           }}
           className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "focus"
+            sessionType === "FOCUS"
               ? "bg-white text-[#FF6B6B]"
               : "bg-white/20 text-white"
           }`}
@@ -268,11 +337,11 @@ function Timer() {
         </button>
         <button
           onClick={() => {
-            setSessionType("shortBreak");
+            setSessionType("SHORT_BREAK");
             handleReset();
           }}
           className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "shortBreak"
+            sessionType === "SHORT_BREAK"
               ? "bg-white text-[#FF6B6B]"
               : "bg-white/20 text-white"
           }`}
@@ -281,11 +350,11 @@ function Timer() {
         </button>
         <button
           onClick={() => {
-            setSessionType("longBreak");
+            setSessionType("LONG_BREAK");
             handleReset();
           }}
           className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "longBreak"
+            sessionType === "LONG_BREAK"
               ? "bg-white text-[#FF6B6B]"
               : "bg-white/20 text-white"
           }`}
@@ -322,9 +391,9 @@ function Timer() {
             {display}
           </span>
           <p className="text-white/70 text-sm font-medium tracking-wide">
-            {sessionType === "focus"
+            {sessionType === "FOCUS"
               ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
-              : sessionType === "shortBreak"
+              : sessionType === "SHORT_BREAK"
                 ? completedFocusSessions === 0
                   ? `Short Break`
                   : `Short Break for Session ${completedFocusSessions}`
@@ -334,11 +403,25 @@ function Timer() {
       </div>
       <div className="flex gap-4">
         <button
-          onClick={isRunning ? handlePause : handleStart}
+          onClick={
+            isRunning
+              ? handlePause
+              : accumulatedMs > 0
+                ? handleResume
+                : handleStart
+          }
           className="px-8 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
         >
           {isRunning ? "Pause" : accumulatedMs > 0 ? "Resume" : "Start"}
         </button>
+        {(isRunning || accumulatedMs > 0) && (
+          <button
+            onClick={handleStop}
+            className="px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+          >
+            Stop
+          </button>
+        )}
       </div>
     </div>
   );

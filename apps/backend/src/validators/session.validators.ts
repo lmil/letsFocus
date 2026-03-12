@@ -4,6 +4,7 @@ export const startSessionSchema = z.object({
   type: z.enum(["FOCUS", "SHORT_BREAK", "LONG_BREAK"]),
   duration: z.number().int().min(1),
   taskId: z.uuid().optional(),
+  startedAt: z.iso.datetime(),
 });
 
 export const pauseSessionSchema = z.object({

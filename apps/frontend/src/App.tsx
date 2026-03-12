@@ -7,7 +7,7 @@ function App() {
 
   useEffect(() => {
     api
-      .get("/api/health")
+      .get("/health")
       .then(() => {
         setBackendStatus("connected ✅");
       })
