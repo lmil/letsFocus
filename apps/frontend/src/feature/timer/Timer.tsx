@@ -24,6 +24,8 @@ type TimerSettings = {
   sessionsUntilLongBreak: number;
 };
 
+type TimerMode = "pomodoro" | "strict" | "custom";
+
 function Timer() {
   const [sessionType, setSessionType] = useState<SessionType>("FOCUS");
   const [completedFocusSessions, setCompletedFocusSessions] = useState(0);
@@ -38,6 +40,7 @@ function Timer() {
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [timerMode, setTimerMode] = useState<TimerMode>("pomodoro");
 
   const durations: Record<SessionType, number> = {
     FOCUS: settings.focusMinutes * 60 * 1000,
