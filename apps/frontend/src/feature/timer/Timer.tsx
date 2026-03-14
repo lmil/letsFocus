@@ -15,6 +15,9 @@ import {
   Cog6ToothIcon,
   XMarkIcon,
   ArrowPathIcon,
+  ClockIcon,
+  LockClosedIcon,
+  AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/outline";
 
 type TimerSettings = {
@@ -365,6 +368,7 @@ function Timer() {
           Long Break
         </button>
       </div>
+
       <div className="relative flex items-center justify-center w-64 h-64">
         <svg className="absolute w-full h-full -rotate-90">
           <circle
@@ -425,6 +429,51 @@ function Timer() {
             Stop
           </button>
         )}
+      </div>
+
+      <div className="flex gap-3">
+        <button
+          onClick={() => {
+            setTimerMode("pomodoro");
+            handleReset();
+          }}
+          title="Pomodoro Mode"
+          className={`p-2 rounded-full transition-all ${
+            timerMode === "pomodoro"
+              ? "bg-white/30 text-white"
+              : "text-white/40 hover:text-white/70"
+          }`}
+        >
+          <ClockIcon className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => {
+            setTimerMode("strict");
+            handleReset();
+          }}
+          title="Strict Mode"
+          className={`p-2 rounded-full transition-all ${
+            timerMode === "strict"
+              ? "bg-white/30 text-white"
+              : "text-white/40 hover:text-white/70"
+          }`}
+        >
+          <LockClosedIcon className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => {
+            setTimerMode("custom");
+            handleReset();
+          }}
+          title="Custom Mode"
+          className={`p-2 rounded-full transition-all ${
+            timerMode === "custom"
+              ? "bg-white/30 text-white"
+              : "text-white/40 hover:text-white/70"
+          }`}
+        >
+          <AdjustmentsHorizontalIcon className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );
