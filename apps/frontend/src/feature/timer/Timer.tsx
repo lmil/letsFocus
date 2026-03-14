@@ -397,15 +397,24 @@ function Timer() {
           <span className="text-white text-5xl font-bold tracking-widest">
             {display}
           </span>
-          <p className="text-white/70 text-sm font-medium tracking-wide">
-            {sessionType === "FOCUS"
-              ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
-              : sessionType === "SHORT_BREAK"
-                ? completedFocusSessions === 0
-                  ? `Short Break`
-                  : `Short Break for Session ${completedFocusSessions}`
-                : `Long Break`}
-          </p>
+
+          {timerMode === "strict" && (
+            <p className="text-white/60 text-xs font-semibold tracking-widest uppercase flex items-center justify-center gap-1">
+              <LockClosedIcon className="w-3 h-3" />
+              Strict
+            </p>
+          )}
+          {timerMode === "pomodoro" && (
+            <p className="text-white/70 text-sm font-medium tracking-wide">
+              {sessionType === "FOCUS"
+                ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
+                : sessionType === "SHORT_BREAK"
+                  ? completedFocusSessions === 0
+                    ? `Short Break`
+                    : `Short Break for Session ${completedFocusSessions}`
+                  : `Long Break`}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex gap-4">
@@ -417,14 +426,24 @@ function Timer() {
                 ? handleResume
                 : handleStart
           }
-          className="px-8 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+          disabled={isRunning && timerMode === "strict"}
+          className={`px-8 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide transition-transform ${
+            isRunning && timerMode === "strict"
+              ? "opacity-40 cursor-not-allowed"
+              : "hover:scale-105"
+          }`}
         >
           {isRunning ? "Pause" : accumulatedMs > 0 ? "Resume" : "Start"}
         </button>
         {(isRunning || accumulatedMs > 0) && (
           <button
             onClick={handleStop}
-            className="px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+            disabled={isRunning && timerMode === "strict"}
+            className={`px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide transition-transform ${
+              isRunning && timerMode === "strict"
+                ? "opacity-40 cursor-not-allowed"
+                : "hover:scale-105"
+            }`}
           >
             Stop
           </button>
