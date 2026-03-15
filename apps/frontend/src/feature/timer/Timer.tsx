@@ -44,6 +44,7 @@ function Timer() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [timerMode, setTimerMode] = useState<TimerMode>("pomodoro");
+  const [customMinutes, setCustomMinutes] = useState(25);
 
   const durations: Record<SessionType, number> = {
     FOCUS: settings.focusMinutes * 60 * 1000,
@@ -91,7 +92,8 @@ function Timer() {
   // Derived values
   const isRunning = startTime !== null;
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
-  const duration = durations[sessionType];
+  const duration =
+    timerMode === "custom" ? customMinutes * 60 * 1000 : durations[sessionType];
   const timeLeftMs = Math.max(0, duration - elapsedMs);
 
   useEffect(() => {
@@ -111,7 +113,9 @@ function Timer() {
 
         if (currentSessionId) {
           completeSessionRef.current(currentSessionId).then((response) => {
-            setSessionType(response.data.nextSessionType);
+            if (timerMode !== "custom") {
+              setSessionType(response.data.nextSessionType);
+            }
           });
         }
       } else {
@@ -126,6 +130,7 @@ function Timer() {
     duration,
     sessionType,
     settings.sessionsUntilLongBreak,
+    timerMode,
   ]);
 
   async function handleStart() {
@@ -327,47 +332,64 @@ function Timer() {
           </div>
         )}
       </div>
-      <div className="flex gap-2">
-        <button
-          onClick={() => {
-            setSessionType("FOCUS");
-            handleReset();
-          }}
-          className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "FOCUS"
-              ? "bg-white text-[#FF6B6B]"
-              : "bg-white/20 text-white"
-          }`}
-        >
-          Focus
-        </button>
-        <button
-          onClick={() => {
-            setSessionType("SHORT_BREAK");
-            handleReset();
-          }}
-          className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "SHORT_BREAK"
-              ? "bg-white text-[#FF6B6B]"
-              : "bg-white/20 text-white"
-          }`}
-        >
-          Short Break
-        </button>
-        <button
-          onClick={() => {
-            setSessionType("LONG_BREAK");
-            handleReset();
-          }}
-          className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "LONG_BREAK"
-              ? "bg-white text-[#FF6B6B]"
-              : "bg-white/20 text-white"
-          }`}
-        >
-          Long Break
-        </button>
-      </div>
+      {timerMode === "custom" ? (
+        <div className="flex items-center gap-3">
+          <input
+            type="number"
+            min={1}
+            max={120}
+            value={customMinutes}
+            onChange={(e) => {
+              setCustomMinutes(Number(e.target.value));
+              handleReset();
+            }}
+            className="w-20 text-center bg-white/20 text-white font-bold text-sm rounded-full px-3 py-1.5 outline-none"
+          />
+          <span className="text-white/70 text-sm font-medium">minutes</span>
+        </div>
+      ) : (
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setSessionType("FOCUS");
+              handleReset();
+            }}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              sessionType === "FOCUS"
+                ? "bg-white text-[#FF6B6B]"
+                : "bg-white/20 text-white"
+            }`}
+          >
+            Focus
+          </button>
+          <button
+            onClick={() => {
+              setSessionType("SHORT_BREAK");
+              handleReset();
+            }}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              sessionType === "SHORT_BREAK"
+                ? "bg-white text-[#FF6B6B]"
+                : "bg-white/20 text-white"
+            }`}
+          >
+            Short Break
+          </button>
+          <button
+            onClick={() => {
+              setSessionType("LONG_BREAK");
+              handleReset();
+            }}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              sessionType === "LONG_BREAK"
+                ? "bg-white text-[#FF6B6B]"
+                : "bg-white/20 text-white"
+            }`}
+          >
+            Long Break
+          </button>
+        </div>
+      )}
 
       <div className="relative flex items-center justify-center w-64 h-64">
         <svg className="absolute w-full h-full -rotate-90">
