@@ -15,6 +15,9 @@ import {
   Cog6ToothIcon,
   XMarkIcon,
   ArrowPathIcon,
+  ClockIcon,
+  LockClosedIcon,
+  AdjustmentsHorizontalIcon,
 } from "@heroicons/react/24/outline";
 
 type TimerSettings = {
@@ -41,6 +44,7 @@ function Timer() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [timerMode, setTimerMode] = useState<TimerMode>("pomodoro");
+  const [customMinutes, setCustomMinutes] = useState(25);
 
   const durations: Record<SessionType, number> = {
     FOCUS: settings.focusMinutes * 60 * 1000,
@@ -88,7 +92,8 @@ function Timer() {
   // Derived values
   const isRunning = startTime !== null;
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
-  const duration = durations[sessionType];
+  const duration =
+    timerMode === "custom" ? customMinutes * 60 * 1000 : durations[sessionType];
   const timeLeftMs = Math.max(0, duration - elapsedMs);
 
   useEffect(() => {
@@ -108,7 +113,9 @@ function Timer() {
 
         if (currentSessionId) {
           completeSessionRef.current(currentSessionId).then((response) => {
-            setSessionType(response.data.nextSessionType);
+            if (timerMode !== "custom") {
+              setSessionType(response.data.nextSessionType);
+            }
           });
         }
       } else {
@@ -123,6 +130,7 @@ function Timer() {
     duration,
     sessionType,
     settings.sessionsUntilLongBreak,
+    timerMode,
   ]);
 
   async function handleStart() {
@@ -324,47 +332,65 @@ function Timer() {
           </div>
         )}
       </div>
-      <div className="flex gap-2">
-        <button
-          onClick={() => {
-            setSessionType("FOCUS");
-            handleReset();
-          }}
-          className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "FOCUS"
-              ? "bg-white text-[#FF6B6B]"
-              : "bg-white/20 text-white"
-          }`}
-        >
-          Focus
-        </button>
-        <button
-          onClick={() => {
-            setSessionType("SHORT_BREAK");
-            handleReset();
-          }}
-          className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "SHORT_BREAK"
-              ? "bg-white text-[#FF6B6B]"
-              : "bg-white/20 text-white"
-          }`}
-        >
-          Short Break
-        </button>
-        <button
-          onClick={() => {
-            setSessionType("LONG_BREAK");
-            handleReset();
-          }}
-          className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-            sessionType === "LONG_BREAK"
-              ? "bg-white text-[#FF6B6B]"
-              : "bg-white/20 text-white"
-          }`}
-        >
-          Long Break
-        </button>
-      </div>
+      {timerMode === "custom" ? (
+        <div className="flex items-center gap-3">
+          <input
+            type="number"
+            min={1}
+            max={120}
+            value={customMinutes}
+            onChange={(e) => {
+              setCustomMinutes(Number(e.target.value));
+              handleReset();
+            }}
+            className="w-20 text-center bg-white/20 text-white font-bold text-sm rounded-full px-3 py-1.5 outline-none"
+          />
+          <span className="text-white/70 text-sm font-medium">minutes</span>
+        </div>
+      ) : (
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setSessionType("FOCUS");
+              handleReset();
+            }}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              sessionType === "FOCUS"
+                ? "bg-white text-[#FF6B6B]"
+                : "bg-white/20 text-white"
+            }`}
+          >
+            Focus
+          </button>
+          <button
+            onClick={() => {
+              setSessionType("SHORT_BREAK");
+              handleReset();
+            }}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              sessionType === "SHORT_BREAK"
+                ? "bg-white text-[#FF6B6B]"
+                : "bg-white/20 text-white"
+            }`}
+          >
+            Short Break
+          </button>
+          <button
+            onClick={() => {
+              setSessionType("LONG_BREAK");
+              handleReset();
+            }}
+            className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+              sessionType === "LONG_BREAK"
+                ? "bg-white text-[#FF6B6B]"
+                : "bg-white/20 text-white"
+            }`}
+          >
+            Long Break
+          </button>
+        </div>
+      )}
+
       <div className="relative flex items-center justify-center w-64 h-64">
         <svg className="absolute w-full h-full -rotate-90">
           <circle
@@ -393,15 +419,24 @@ function Timer() {
           <span className="text-white text-5xl font-bold tracking-widest">
             {display}
           </span>
-          <p className="text-white/70 text-sm font-medium tracking-wide">
-            {sessionType === "FOCUS"
-              ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
-              : sessionType === "SHORT_BREAK"
-                ? completedFocusSessions === 0
-                  ? `Short Break`
-                  : `Short Break for Session ${completedFocusSessions}`
-                : `Long Break`}
-          </p>
+
+          {timerMode === "strict" && (
+            <p className="text-white/60 text-xs font-semibold tracking-widest uppercase flex items-center justify-center gap-1">
+              <LockClosedIcon className="w-3 h-3" />
+              Strict
+            </p>
+          )}
+          {timerMode === "pomodoro" && (
+            <p className="text-white/70 text-sm font-medium tracking-wide">
+              {sessionType === "FOCUS"
+                ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
+                : sessionType === "SHORT_BREAK"
+                  ? completedFocusSessions === 0
+                    ? `Short Break`
+                    : `Short Break for Session ${completedFocusSessions}`
+                  : `Long Break`}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex gap-4">
@@ -413,18 +448,73 @@ function Timer() {
                 ? handleResume
                 : handleStart
           }
-          className="px-8 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+          disabled={isRunning && timerMode === "strict"}
+          className={`px-8 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide transition-transform ${
+            isRunning && timerMode === "strict"
+              ? "opacity-40 cursor-not-allowed"
+              : "hover:scale-105"
+          }`}
         >
           {isRunning ? "Pause" : accumulatedMs > 0 ? "Resume" : "Start"}
         </button>
         {(isRunning || accumulatedMs > 0) && (
           <button
             onClick={handleStop}
-            className="px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+            disabled={isRunning && timerMode === "strict"}
+            className={`px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide transition-transform ${
+              isRunning && timerMode === "strict"
+                ? "opacity-40 cursor-not-allowed"
+                : "hover:scale-105"
+            }`}
           >
             Stop
           </button>
         )}
+      </div>
+
+      <div className="flex gap-3">
+        <button
+          onClick={() => {
+            setTimerMode("pomodoro");
+            handleReset();
+          }}
+          title="Pomodoro Mode"
+          className={`p-2 rounded-full transition-all ${
+            timerMode === "pomodoro"
+              ? "bg-white/30 text-white"
+              : "text-white/40 hover:text-white/70"
+          }`}
+        >
+          <ClockIcon className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => {
+            setTimerMode("strict");
+            handleReset();
+          }}
+          title="Strict Mode"
+          className={`p-2 rounded-full transition-all ${
+            timerMode === "strict"
+              ? "bg-white/30 text-white"
+              : "text-white/40 hover:text-white/70"
+          }`}
+        >
+          <LockClosedIcon className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => {
+            setTimerMode("custom");
+            handleReset();
+          }}
+          title="Custom Mode"
+          className={`p-2 rounded-full transition-all ${
+            timerMode === "custom"
+              ? "bg-white/30 text-white"
+              : "text-white/40 hover:text-white/70"
+          }`}
+        >
+          <AdjustmentsHorizontalIcon className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );
