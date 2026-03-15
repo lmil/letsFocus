@@ -478,11 +478,16 @@ function Timer() {
             setTimerMode("pomodoro");
             handleReset();
           }}
+          disabled={isRunning || accumulatedMs > 0}
           title="Pomodoro Mode"
           className={`p-2 rounded-full transition-all ${
-            timerMode === "pomodoro"
-              ? "bg-white/30 text-white"
-              : "text-white/40 hover:text-white/70"
+            isRunning || accumulatedMs > 0
+              ? timerMode === "pomodoro"
+                ? "bg-white/30 text-white cursor-not-allowed"
+                : "text-white/20 cursor-not-allowed"
+              : timerMode === "pomodoro"
+                ? "bg-white/30 text-white"
+                : "text-white/40 hover:text-white/70"
           }`}
         >
           <ClockIcon className="w-5 h-5" />
@@ -492,11 +497,16 @@ function Timer() {
             setTimerMode("strict");
             handleReset();
           }}
+          disabled={isRunning || accumulatedMs > 0}
           title="Strict Mode"
           className={`p-2 rounded-full transition-all ${
-            timerMode === "strict"
-              ? "bg-white/30 text-white"
-              : "text-white/40 hover:text-white/70"
+            isRunning || accumulatedMs > 0
+              ? timerMode === "strict"
+                ? "bg-white/30 text-white cursor-not-allowed"
+                : "text-white/20 cursor-not-allowed"
+              : timerMode === "strict"
+                ? "bg-white/30 text-white"
+                : "text-white/40 hover:text-white/70"
           }`}
         >
           <LockClosedIcon className="w-5 h-5" />
@@ -506,11 +516,16 @@ function Timer() {
             setTimerMode("custom");
             handleReset();
           }}
+          disabled={isRunning || accumulatedMs > 0}
           title="Custom Mode"
           className={`p-2 rounded-full transition-all ${
-            timerMode === "custom"
-              ? "bg-white/30 text-white"
-              : "text-white/40 hover:text-white/70"
+            isRunning || accumulatedMs > 0
+              ? timerMode === "custom"
+                ? "bg-white/30 text-white cursor-not-allowed"
+                : "text-white/20 cursor-not-allowed"
+              : timerMode === "custom"
+                ? "bg-white/30 text-white"
+                : "text-white/40 hover:text-white/70"
           }`}
         >
           <AdjustmentsHorizontalIcon className="w-5 h-5" />
