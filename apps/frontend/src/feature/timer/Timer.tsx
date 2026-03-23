@@ -55,6 +55,11 @@ function Timer() {
       return Notification.permission;
     });
 
+  const [toast, setToast] = useState<{ visible: boolean; message: string }>({
+    visible: false,
+    message: "",
+  });
+
   const durations: Record<SessionType, number> = {
     FOCUS: settings.focusMinutes * 60 * 1000,
     SHORT_BREAK: settings.shortBreakMinutes * 60 * 1000,
@@ -97,6 +102,14 @@ function Timer() {
     sessionIdRef.current = sessionId;
     completeSessionRef.current = completeSessionMutation.mutateAsync;
   });
+
+  useEffect(() => {
+    if (!toast.visible) return;
+    const timeout = setTimeout(() => {
+      setToast({ visible: false, message: "" });
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [toast.visible]);
 
   // Derived values
   const isRunning = startTime !== null;
@@ -547,6 +560,11 @@ function Timer() {
           <AdjustmentsHorizontalIcon className="w-5 h-5" />
         </button>
       </div>
+      {toast.visible && (
+        <div className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-full">
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }
