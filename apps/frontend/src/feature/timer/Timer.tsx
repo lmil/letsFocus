@@ -25,6 +25,8 @@ type TimerSettings = {
   shortBreakMinutes: number;
   longBreakMinutes: number;
   sessionsUntilLongBreak: number;
+  notificationsEnabled: boolean;
+  soundEnabled: boolean;
 };
 
 type TimerMode = "pomodoro" | "strict" | "custom";
@@ -40,11 +42,18 @@ function Timer() {
     shortBreakMinutes: 5,
     longBreakMinutes: 15,
     sessionsUntilLongBreak: 4,
+    notificationsEnabled: true,
+    soundEnabled: true,
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [timerMode, setTimerMode] = useState<TimerMode>("pomodoro");
   const [customMinutes, setCustomMinutes] = useState(25);
+  const [notificationPermission, setNotificationPermission] =
+    useState<NotificationPermission>(() => {
+      if (typeof Notification === "undefined") return "denied";
+      return Notification.permission;
+    });
 
   const durations: Record<SessionType, number> = {
     FOCUS: settings.focusMinutes * 60 * 1000,
@@ -136,6 +145,11 @@ function Timer() {
   async function handleStart() {
     if (startTime !== null) return; // prevent double start
 
+    if (settings.notificationsEnabled && notificationPermission === "default") {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+    }
+
     const currentNow = Date.now();
     setNow(currentNow);
     setStartTime(currentNow);
@@ -217,6 +231,8 @@ function Timer() {
                         shortBreakMinutes: 5,
                         longBreakMinutes: 15,
                         sessionsUntilLongBreak: 4,
+                        notificationsEnabled: true,
+                        soundEnabled: true,
                       })
                     }
                     className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
