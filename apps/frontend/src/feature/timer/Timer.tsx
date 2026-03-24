@@ -25,9 +25,64 @@ type TimerSettings = {
   shortBreakMinutes: number;
   longBreakMinutes: number;
   sessionsUntilLongBreak: number;
+  notificationsEnabled: boolean;
+  soundEnabled: boolean;
 };
 
 type TimerMode = "pomodoro" | "strict" | "custom";
+
+const getCompletionMessage = (type: SessionType) => {
+  if (type === "FOCUS") {
+    return {
+      toast: "Focus session complete! Time for a break.",
+      title: "LetsFocus — Session Complete 🍅",
+      body: "Time for a break. Well done!",
+    };
+  }
+  if (type === "SHORT_BREAK") {
+    return {
+      toast: "Break's over! Ready to focus?",
+      title: "LetsFocus — Break Over ⏰",
+      body: "Ready to focus again?",
+    };
+  }
+  return {
+    toast: "Long break done. Let's get back to it!",
+    title: "LetsFocus — Long Break Done 💪",
+    body: "Time to get back to it!",
+  };
+};
+
+const playCompletionSound = () => {
+  const context = new AudioContext();
+
+  const beepCount = 6;
+  const beepDuration = 0.18;
+  const beepGap = 0.08;
+
+  for (let i = 0; i < beepCount; i++) {
+    const oscillator = context.createOscillator();
+    const gainNode = context.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(context.destination);
+
+    oscillator.type = "square";
+
+    const startAt = context.currentTime + i * (beepDuration + beepGap);
+    const stopAt = startAt + beepDuration;
+
+    // alternate between two frequencies for that classic alarm warble
+    oscillator.frequency.setValueAtTime(1000, startAt);
+    oscillator.frequency.setValueAtTime(1200, startAt + beepDuration / 2);
+
+    gainNode.gain.setValueAtTime(0.4, startAt);
+    gainNode.gain.setValueAtTime(0, stopAt);
+
+    oscillator.start(startAt);
+    oscillator.stop(stopAt);
+  }
+};
 
 function Timer() {
   const [sessionType, setSessionType] = useState<SessionType>("FOCUS");
@@ -40,11 +95,23 @@ function Timer() {
     shortBreakMinutes: 5,
     longBreakMinutes: 15,
     sessionsUntilLongBreak: 4,
+    notificationsEnabled: true,
+    soundEnabled: true,
   });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [timerMode, setTimerMode] = useState<TimerMode>("pomodoro");
   const [customMinutes, setCustomMinutes] = useState(25);
+  const [notificationPermission, setNotificationPermission] =
+    useState<NotificationPermission>(() => {
+      if (typeof Notification === "undefined") return "denied";
+      return Notification.permission;
+    });
+
+  const [toast, setToast] = useState<{ visible: boolean; message: string }>({
+    visible: false,
+    message: "",
+  });
 
   const durations: Record<SessionType, number> = {
     FOCUS: settings.focusMinutes * 60 * 1000,
@@ -89,6 +156,14 @@ function Timer() {
     completeSessionRef.current = completeSessionMutation.mutateAsync;
   });
 
+  useEffect(() => {
+    if (!toast.visible) return;
+    const timeout = setTimeout(() => {
+      setToast({ visible: false, message: "" });
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [toast.visible]);
+
   // Derived values
   const isRunning = startTime !== null;
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
@@ -111,6 +186,21 @@ function Timer() {
         const currentSessionId = sessionIdRef.current;
         setSessionId(null);
 
+        const messages = getCompletionMessage(sessionType);
+
+        setToast({ visible: true, message: messages.toast });
+
+        if (settings.soundEnabled) {
+          playCompletionSound();
+        }
+
+        if (
+          settings.notificationsEnabled &&
+          notificationPermission === "granted"
+        ) {
+          new Notification(messages.title, { body: messages.body });
+        }
+
         if (currentSessionId) {
           completeSessionRef.current(currentSessionId).then((response) => {
             if (timerMode !== "custom") {
@@ -130,11 +220,19 @@ function Timer() {
     duration,
     sessionType,
     settings.sessionsUntilLongBreak,
+    settings.notificationsEnabled,
     timerMode,
+    notificationPermission,
+    settings.soundEnabled,
   ]);
 
   async function handleStart() {
     if (startTime !== null) return; // prevent double start
+
+    if (settings.notificationsEnabled && notificationPermission === "default") {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+    }
 
     const currentNow = Date.now();
     setNow(currentNow);
@@ -217,6 +315,8 @@ function Timer() {
                         shortBreakMinutes: 5,
                         longBreakMinutes: 15,
                         sessionsUntilLongBreak: 4,
+                        notificationsEnabled: true,
+                        soundEnabled: true,
                       })
                     }
                     className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
@@ -326,6 +426,54 @@ function Timer() {
                     }}
                     className="w-full accent-[#FF6B6B]"
                   />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600 font-medium text-sm">
+                    Sound
+                  </span>
+                  <button
+                    onClick={() =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        soundEnabled: !prev.soundEnabled,
+                      }))
+                    }
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                      settings.soundEnabled
+                        ? "bg-[#FF6B6B] text-white"
+                        : "bg-gray-100 text-gray-400"
+                    }`}
+                  >
+                    {settings.soundEnabled ? "ON" : "OFF"}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600 font-medium text-sm">
+                    Notifications
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {notificationPermission === "denied" && (
+                      <span className="text-xs text-gray-400">
+                        blocked in browser
+                      </span>
+                    )}
+                    <button
+                      onClick={() =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          notificationsEnabled: !prev.notificationsEnabled,
+                        }))
+                      }
+                      className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                        settings.notificationsEnabled
+                          ? "bg-[#FF6B6B] text-white"
+                          : "bg-gray-100 text-gray-400"
+                      }`}
+                    >
+                      {settings.notificationsEnabled ? "ON" : "OFF"}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -531,6 +679,11 @@ function Timer() {
           <AdjustmentsHorizontalIcon className="w-5 h-5" />
         </button>
       </div>
+      {toast.visible && (
+        <div className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-full">
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }
