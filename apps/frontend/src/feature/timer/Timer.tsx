@@ -31,6 +31,28 @@ type TimerSettings = {
 
 type TimerMode = "pomodoro" | "strict" | "custom";
 
+const getCompletionMessage = (type: SessionType) => {
+  if (type === "FOCUS") {
+    return {
+      toast: "Focus session complete! Time for a break.",
+      title: "LetsFocus — Session Complete 🍅",
+      body: "Time for a break. Well done!",
+    };
+  }
+  if (type === "SHORT_BREAK") {
+    return {
+      toast: "Break's over! Ready to focus?",
+      title: "LetsFocus — Break Over ⏰",
+      body: "Ready to focus again?",
+    };
+  }
+  return {
+    toast: "Long break done. Let's get back to it!",
+    title: "LetsFocus — Long Break Done 💪",
+    body: "Time to get back to it!",
+  };
+};
+
 function Timer() {
   const [sessionType, setSessionType] = useState<SessionType>("FOCUS");
   const [completedFocusSessions, setCompletedFocusSessions] = useState(0);
@@ -133,6 +155,17 @@ function Timer() {
         const currentSessionId = sessionIdRef.current;
         setSessionId(null);
 
+        const messages = getCompletionMessage(sessionType);
+
+        setToast({ visible: true, message: messages.toast });
+
+        if (
+          settings.notificationsEnabled &&
+          notificationPermission === "granted"
+        ) {
+          new Notification(messages.title, { body: messages.body });
+        }
+
         if (currentSessionId) {
           completeSessionRef.current(currentSessionId).then((response) => {
             if (timerMode !== "custom") {
@@ -152,7 +185,9 @@ function Timer() {
     duration,
     sessionType,
     settings.sessionsUntilLongBreak,
+    settings.notificationsEnabled,
     timerMode,
+    notificationPermission,
   ]);
 
   async function handleStart() {
