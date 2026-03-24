@@ -53,6 +53,28 @@ const getCompletionMessage = (type: SessionType) => {
   };
 };
 
+const playCompletionSound = () => {
+  const context = new AudioContext();
+  const oscillator = context.createOscillator();
+  const gainNode = context.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(context.destination);
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(880, context.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(
+    440,
+    context.currentTime + 0.3,
+  );
+
+  gainNode.gain.setValueAtTime(0.3, context.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.5);
+
+  oscillator.start(context.currentTime);
+  oscillator.stop(context.currentTime + 0.5);
+};
+
 function Timer() {
   const [sessionType, setSessionType] = useState<SessionType>("FOCUS");
   const [completedFocusSessions, setCompletedFocusSessions] = useState(0);
@@ -159,6 +181,10 @@ function Timer() {
 
         setToast({ visible: true, message: messages.toast });
 
+        if (settings.soundEnabled) {
+          playCompletionSound();
+        }
+
         if (
           settings.notificationsEnabled &&
           notificationPermission === "granted"
@@ -188,6 +214,7 @@ function Timer() {
     settings.notificationsEnabled,
     timerMode,
     notificationPermission,
+    settings.soundEnabled,
   ]);
 
   async function handleStart() {
