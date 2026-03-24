@@ -55,24 +55,33 @@ const getCompletionMessage = (type: SessionType) => {
 
 const playCompletionSound = () => {
   const context = new AudioContext();
-  const oscillator = context.createOscillator();
-  const gainNode = context.createGain();
 
-  oscillator.connect(gainNode);
-  gainNode.connect(context.destination);
+  const beepCount = 6;
+  const beepDuration = 0.18;
+  const beepGap = 0.08;
 
-  oscillator.type = "sine";
-  oscillator.frequency.setValueAtTime(880, context.currentTime);
-  oscillator.frequency.exponentialRampToValueAtTime(
-    440,
-    context.currentTime + 0.3,
-  );
+  for (let i = 0; i < beepCount; i++) {
+    const oscillator = context.createOscillator();
+    const gainNode = context.createGain();
 
-  gainNode.gain.setValueAtTime(0.3, context.currentTime);
-  gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.5);
+    oscillator.connect(gainNode);
+    gainNode.connect(context.destination);
 
-  oscillator.start(context.currentTime);
-  oscillator.stop(context.currentTime + 0.5);
+    oscillator.type = "square";
+
+    const startAt = context.currentTime + i * (beepDuration + beepGap);
+    const stopAt = startAt + beepDuration;
+
+    // alternate between two frequencies for that classic alarm warble
+    oscillator.frequency.setValueAtTime(1000, startAt);
+    oscillator.frequency.setValueAtTime(1200, startAt + beepDuration / 2);
+
+    gainNode.gain.setValueAtTime(0.4, startAt);
+    gainNode.gain.setValueAtTime(0, stopAt);
+
+    oscillator.start(startAt);
+    oscillator.stop(stopAt);
+  }
 };
 
 function Timer() {
