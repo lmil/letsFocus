@@ -290,6 +290,15 @@ function Timer() {
   const progress = timeLeftMs / duration;
   const dashOffset = circumference * (1 - progress);
 
+  useEffect(() => {
+    if (isRunning) {
+      const label = sessionType === "FOCUS" ? "Focus" : "Break";
+      document.title = `${display} - ${label} | LetSFocus`;
+    } else {
+      document.title = "LetsFocus";
+    }
+  }, [display, isRunning, sessionType]);
+
   return (
     <div className="relative flex flex-col items-center justify-center gap-8">
       <div className="w-full flex justify-end">
