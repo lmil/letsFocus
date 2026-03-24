@@ -418,6 +418,54 @@ function Timer() {
                     className="w-full accent-[#FF6B6B]"
                   />
                 </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600 font-medium text-sm">
+                    Sound
+                  </span>
+                  <button
+                    onClick={() =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        soundEnabled: !prev.soundEnabled,
+                      }))
+                    }
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                      settings.soundEnabled
+                        ? "bg-[#FF6B6B] text-white"
+                        : "bg-gray-100 text-gray-400"
+                    }`}
+                  >
+                    {settings.soundEnabled ? "ON" : "OFF"}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600 font-medium text-sm">
+                    Notifications
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {notificationPermission === "denied" && (
+                      <span className="text-xs text-gray-400">
+                        blocked in browser
+                      </span>
+                    )}
+                    <button
+                      onClick={() =>
+                        setSettings((prev) => ({
+                          ...prev,
+                          notificationsEnabled: !prev.notificationsEnabled,
+                        }))
+                      }
+                      className={`px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                        settings.notificationsEnabled
+                          ? "bg-[#FF6B6B] text-white"
+                          : "bg-gray-100 text-gray-400"
+                      }`}
+                    >
+                      {settings.notificationsEnabled ? "ON" : "OFF"}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
