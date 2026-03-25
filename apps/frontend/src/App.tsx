@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "./lib/api";
 import Timer from "./feature/timer/Timer";
+import TaskList from "./feature/tasks/TaskList";
 
 function App() {
   const [backendStatus, setBackendStatus] = useState<string>("Checking...");
@@ -23,6 +24,7 @@ function App() {
         <div className="text-center">
           <h1 className="text-6xl font-bold text-white mb-4">LetsFocus</h1>
           <Timer />
+          <TaskList />
         </div>
       </div>
     </>
