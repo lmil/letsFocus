@@ -166,7 +166,14 @@ function Timer() {
 
   // Derived values
   const isRunning = startTime !== null;
-  const ringColor = !isRunning && accumulatedMs > 0 ? "#2563EB" : "#FF6B6B";
+  const ringColor = !isRunning && accumulatedMs > 0 ? "#1A96F0" : "#FF6B6B";
+  const primaryLabel = isRunning
+    ? "Pause"
+    : accumulatedMs > 0
+      ? "Continue"
+      : sessionType === "FOCUS"
+        ? "Start to Focus"
+        : "Start Break";
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
   const duration =
     timerMode === "custom" ? customMinutes * 60 * 1000 : durations[sessionType];
@@ -604,6 +611,22 @@ function Timer() {
         </div>
       </div>
       <div className="flex gap-4">
+        {!isRunning && accumulatedMs > 0 && sessionType === "FOCUS" && (
+          <button
+            onClick={handleStop}
+            className="px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+          >
+            Stop
+          </button>
+        )}
+        {isRunning && sessionType !== "FOCUS" && (
+          <button
+            onClick={handleStop}
+            className="px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+          >
+            Skip Break
+          </button>
+        )}
         <button
           onClick={
             isRunning
@@ -619,21 +642,8 @@ function Timer() {
               : "hover:scale-105"
           }`}
         >
-          {isRunning ? "Pause" : accumulatedMs > 0 ? "Resume" : "Start"}
+          {primaryLabel}
         </button>
-        {(isRunning || accumulatedMs > 0) && (
-          <button
-            onClick={handleStop}
-            disabled={isRunning && timerMode === "strict"}
-            className={`px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide transition-transform ${
-              isRunning && timerMode === "strict"
-                ? "opacity-40 cursor-not-allowed"
-                : "hover:scale-105"
-            }`}
-          >
-            Stop
-          </button>
-        )}
       </div>
 
       <div className="flex gap-3">
