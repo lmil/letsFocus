@@ -166,6 +166,14 @@ function Timer() {
 
   // Derived values
   const isRunning = startTime !== null;
+  const ringColor = !isRunning && accumulatedMs > 0 ? "#1A96F0" : "#FF6B6B";
+  const primaryLabel = isRunning
+    ? "Pause"
+    : accumulatedMs > 0
+      ? "Continue"
+      : sessionType === "FOCUS"
+        ? "Start to Focus"
+        : "Start Break";
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
   const duration =
     timerMode === "custom" ? customMinutes * 60 * 1000 : durations[sessionType];
@@ -289,6 +297,15 @@ function Timer() {
   const circumference = 2 * Math.PI * 112;
   const progress = timeLeftMs / duration;
   const dashOffset = circumference * (1 - progress);
+
+  useEffect(() => {
+    if (isRunning) {
+      const label = sessionType === "FOCUS" ? "Focus" : "Break";
+      document.title = `${display} - ${label} | LetSFocus`;
+    } else {
+      document.title = "LetsFocus";
+    }
+  }, [display, isRunning, sessionType]);
 
   return (
     <div className="relative flex flex-col items-center justify-center gap-8">
@@ -539,55 +556,77 @@ function Timer() {
         </div>
       )}
 
-      <div className="relative flex items-center justify-center w-64 h-64">
-        <svg className="absolute w-full h-full -rotate-90">
+      <div className="relative flex items-center justify-center w-72 h-72">
+        <svg
+          className="absolute w-full h-full -rotate-90"
+          viewBox="0 0 280 280"
+        >
+          <circle cx="140" cy="140" r="132" fill="white" />
           <circle
-            cx="128"
-            cy="128"
+            cx="140"
+            cy="140"
             r="112"
             fill="none"
-            stroke="white"
-            strokeOpacity="0.2"
+            stroke="#e5e7eb"
             strokeWidth="12"
           />
           <circle
-            cx="128"
-            cy="128"
+            cx="140"
+            cy="140"
             r="112"
             fill="none"
-            stroke="white"
+            stroke={ringColor}
             strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
-            style={{ transition: "stroke-dashoffset 0.8s linear" }}
+            style={{
+              transition: "stroke-dashoffset 0.8s linear, stroke 0.3s ease",
+            }}
           />
         </svg>
-        <div className="flex gap-2 flex-col">
-          <span className="text-white text-5xl font-bold tracking-widest">
-            {display}
-          </span>
-
-          {timerMode === "strict" && (
-            <p className="text-white/60 text-xs font-semibold tracking-widest uppercase flex items-center justify-center gap-1">
-              <LockClosedIcon className="w-3 h-3" />
-              Strict
-            </p>
-          )}
-          {timerMode === "pomodoro" && (
-            <p className="text-white/70 text-sm font-medium tracking-wide">
-              {sessionType === "FOCUS"
-                ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
-                : sessionType === "SHORT_BREAK"
-                  ? completedFocusSessions === 0
-                    ? `Short Break`
-                    : `Short Break for Session ${completedFocusSessions}`
-                  : `Long Break`}
-            </p>
-          )}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-gray-800 text-5xl font-bold tracking-widest">
+              {display}
+            </span>
+            {timerMode === "strict" && (
+              <p className="text-gray-400 text-xs font-semibold tracking-widest uppercase flex items-center justify-center gap-1">
+                <LockClosedIcon className="w-3 h-3" />
+                Strict
+              </p>
+            )}
+            {timerMode === "pomodoro" && (
+              <p className="text-gray-400 text-sm font-medium tracking-wide">
+                {sessionType === "FOCUS"
+                  ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
+                  : sessionType === "SHORT_BREAK"
+                    ? completedFocusSessions === 0
+                      ? `Short Break`
+                      : `Short Break for Session ${completedFocusSessions}`
+                    : `Long Break`}
+              </p>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex gap-4">
+        {!isRunning && accumulatedMs > 0 && sessionType === "FOCUS" && (
+          <button
+            onClick={handleStop}
+            className="px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+          >
+            Stop
+          </button>
+        )}
+        {isRunning && sessionType !== "FOCUS" && (
+          <button
+            onClick={handleStop}
+            className="px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide hover:scale-105 transition-transform"
+          >
+            Skip Break
+          </button>
+        )}
         <button
           onClick={
             isRunning
@@ -603,21 +642,8 @@ function Timer() {
               : "hover:scale-105"
           }`}
         >
-          {isRunning ? "Pause" : accumulatedMs > 0 ? "Resume" : "Start"}
+          {primaryLabel}
         </button>
-        {(isRunning || accumulatedMs > 0) && (
-          <button
-            onClick={handleStop}
-            disabled={isRunning && timerMode === "strict"}
-            className={`px-8 py-3 bg-white/20 text-white rounded-3xl font-bold text-sm tracking-wide transition-transform ${
-              isRunning && timerMode === "strict"
-                ? "opacity-40 cursor-not-allowed"
-                : "hover:scale-105"
-            }`}
-          >
-            Stop
-          </button>
-        )}
       </div>
 
       <div className="flex gap-3">
