@@ -166,6 +166,7 @@ function Timer() {
 
   // Derived values
   const isRunning = startTime !== null;
+  const ringColor = !isRunning && accumulatedMs > 0 ? "#2563EB" : "#FF6B6B";
   const elapsedMs = accumulatedMs + (startTime !== null ? now - startTime : 0);
   const duration =
     timerMode === "custom" ? customMinutes * 60 * 1000 : durations[sessionType];
@@ -548,52 +549,58 @@ function Timer() {
         </div>
       )}
 
-      <div className="relative flex items-center justify-center w-64 h-64">
-        <svg className="absolute w-full h-full -rotate-90">
+      <div className="relative flex items-center justify-center w-72 h-72">
+        <svg
+          className="absolute w-full h-full -rotate-90"
+          viewBox="0 0 280 280"
+        >
+          <circle cx="140" cy="140" r="132" fill="white" />
           <circle
-            cx="128"
-            cy="128"
+            cx="140"
+            cy="140"
             r="112"
             fill="none"
-            stroke="white"
-            strokeOpacity="0.2"
+            stroke="#e5e7eb"
             strokeWidth="12"
           />
           <circle
-            cx="128"
-            cy="128"
+            cx="140"
+            cy="140"
             r="112"
             fill="none"
-            stroke="white"
+            stroke={ringColor}
             strokeWidth="12"
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={dashOffset}
-            style={{ transition: "stroke-dashoffset 0.8s linear" }}
+            style={{
+              transition: "stroke-dashoffset 0.8s linear, stroke 0.3s ease",
+            }}
           />
         </svg>
-        <div className="flex gap-2 flex-col">
-          <span className="text-white text-5xl font-bold tracking-widest">
-            {display}
-          </span>
-
-          {timerMode === "strict" && (
-            <p className="text-white/60 text-xs font-semibold tracking-widest uppercase flex items-center justify-center gap-1">
-              <LockClosedIcon className="w-3 h-3" />
-              Strict
-            </p>
-          )}
-          {timerMode === "pomodoro" && (
-            <p className="text-white/70 text-sm font-medium tracking-wide">
-              {sessionType === "FOCUS"
-                ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
-                : sessionType === "SHORT_BREAK"
-                  ? completedFocusSessions === 0
-                    ? `Short Break`
-                    : `Short Break for Session ${completedFocusSessions}`
-                  : `Long Break`}
-            </p>
-          )}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-gray-800 text-5xl font-bold tracking-widest">
+              {display}
+            </span>
+            {timerMode === "strict" && (
+              <p className="text-gray-400 text-xs font-semibold tracking-widest uppercase flex items-center justify-center gap-1">
+                <LockClosedIcon className="w-3 h-3" />
+                Strict
+              </p>
+            )}
+            {timerMode === "pomodoro" && (
+              <p className="text-gray-400 text-sm font-medium tracking-wide">
+                {sessionType === "FOCUS"
+                  ? `Session ${completedFocusSessions + 1} of ${settings.sessionsUntilLongBreak}`
+                  : sessionType === "SHORT_BREAK"
+                    ? completedFocusSessions === 0
+                      ? `Short Break`
+                      : `Short Break for Session ${completedFocusSessions}`
+                    : `Long Break`}
+              </p>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex gap-4">
