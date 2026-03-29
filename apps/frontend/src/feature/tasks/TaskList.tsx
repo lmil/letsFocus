@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TaskCard from "./TaskCard";
+import TaskForm from "./TaskForm";
 
 type Task = {
   id: string;
@@ -39,6 +40,7 @@ function TaskList() {
   const [activeFilter, setActiveFilter] = useState<
     "all" | "active" | "completed"
   >("all");
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const visibleTasks = tasks
     .filter((task) => {
       if (activeFilter === "active") return !task.isCompleted;
@@ -63,7 +65,10 @@ function TaskList() {
     <div className="w-full flex flex-col gap-2">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-white font-bold text-lg">Tasks</h2>
-        <button className="px-4 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm font-semibold rounded-full transition-colors">
+        <button
+          onClick={() => setIsFormOpen(true)}
+          className="px-4 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm font-semibold rounded-full transition-colors"
+        >
           + Add Task
         </button>
       </div>
@@ -90,6 +95,15 @@ function TaskList() {
           <TaskCard key={task.id} task={task} onComplete={handleComplete} />
         ))
       )}
+
+      <TaskForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={(title, estimatedSession) => {
+          console.log("submit: ", title, estimatedSession);
+          setIsFormOpen(false);
+        }}
+      />
     </div>
   );
 }

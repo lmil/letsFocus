@@ -8,7 +8,7 @@ import BottomNav from "./components/BottomNav";
 function App() {
   return (
     <>
-      <div className="min-h-screen bg-[#FF6B6B] flex flex-col max-w-sm mx-auto">
+      <div className="relative min-h-screen bg-[#FF6B6B] flex flex-col max-w-sm mx-auto">
         <div className="flex-1 flex flex-col">
           <Routes>
             <Route path="/" element={<PomodoroPage />} />
