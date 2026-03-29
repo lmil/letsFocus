@@ -61,6 +61,32 @@ function TaskList() {
     );
   }
 
+  function handleAddTask(title: string, estimatedSessions: number) {
+    const TASK_COLORS = [
+      "#EF4444",
+      "#3B82F6",
+      "#10B981",
+      "#F97316",
+      "#8B5CF6",
+      "#14B8A6",
+    ];
+
+    const randomColor =
+      TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)];
+    setTasks((prev) => [
+      {
+        id: crypto.randomUUID(),
+        title,
+        estimatedSessions,
+        completedSessions: 0,
+        color: randomColor,
+        isCompleted: false,
+      },
+      ...prev,
+    ]);
+    setIsFormOpen(false);
+  }
+
   return (
     <div className="w-full flex flex-col gap-2">
       <div className="flex items-center justify-between mb-2">
@@ -99,10 +125,7 @@ function TaskList() {
       <TaskForm
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
-        onSubmit={(title, estimatedSession) => {
-          console.log("submit: ", title, estimatedSession);
-          setIsFormOpen(false);
-        }}
+        onSubmit={handleAddTask}
       />
     </div>
   );
