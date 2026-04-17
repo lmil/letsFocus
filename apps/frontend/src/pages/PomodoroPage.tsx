@@ -20,7 +20,7 @@ function PomodoroPage() {
       >
         {selectedTask ? selectedTask.title : "+ Select Task"}
       </button>
-      <Timer />
+      <Timer selectedTask={selectedTask} />
       <TaskSelector
         isOpen={isTaskSelectorOpen}
         selectedTask={selectedTask}

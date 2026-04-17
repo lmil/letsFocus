@@ -11,6 +11,7 @@ import type {
   CompleteSessionResponse,
   SessionType,
 } from "../../services/session.service";
+import type { Task } from "../../services/task.service";
 import { useMutation } from "@tanstack/react-query";
 import {
   Cog6ToothIcon,
@@ -31,6 +32,9 @@ type TimerSettings = {
 };
 
 type TimerMode = "pomodoro" | "strict" | "custom";
+type TimerProps = {
+  selectedTask: Task | null;
+};
 
 const getCompletionMessage = (type: SessionType) => {
   if (type === "FOCUS") {
@@ -85,7 +89,7 @@ const playCompletionSound = () => {
   }
 };
 
-function Timer() {
+function Timer({ selectedTask }: TimerProps) {
   const [sessionType, setSessionType] = useState<SessionType>("FOCUS");
   const [completedFocusSessions, setCompletedFocusSessions] = useState(0);
   const [startTime, setStartTime] = useState<number | null>(null);
@@ -123,11 +127,12 @@ function Timer() {
   };
 
   const startSessionMutation = useMutation({
-    mutationFn: (startedAt: string) =>
+    mutationFn: ({ startedAt, taskId }: { startedAt: string; taskId?: string }) =>
       startSession({
         type: sessionType,
         duration: durations[sessionType] / 1000,
         startedAt,
+        taskId,
       }),
   });
 
@@ -143,11 +148,7 @@ function Timer() {
     mutationFn: (id: string) => stopSession(id),
   });
 
-  const completeSessionMutation = useMutation<
-    CompleteSessionResponse,
-    Error,
-    string
-  >({
+  const completeSessionMutation = useMutation<CompleteSessionResponse, Error, string>({
     mutationFn: (id: string) => completeSession(id),
   });
 
@@ -205,10 +206,7 @@ function Timer() {
           playCompletionSound();
         }
 
-        if (
-          settings.notificationsEnabled &&
-          notificationPermission === "granted"
-        ) {
+        if (settings.notificationsEnabled && notificationPermission === "granted") {
           new Notification(messages.title, { body: messages.body });
         }
 
@@ -250,9 +248,10 @@ function Timer() {
     const currentNow = Date.now();
     setNow(currentNow);
     setStartTime(currentNow);
-    const response = await startSessionMutation.mutateAsync(
-      new Date(currentNow).toISOString(),
-    );
+    const response = await startSessionMutation.mutateAsync({
+      startedAt: new Date(currentNow).toISOString(),
+      taskId: selectedTask?.id,
+    });
     setSessionId(response.data.sessionId);
   }
 
@@ -295,9 +294,10 @@ function Timer() {
   const minutes = Math.floor(timeLeftMs / 1000 / 60);
   const seconds = Math.floor((timeLeftMs / 1000) % 60);
 
-  const display = `${String(minutes).padStart(2, "0")}:${String(
-    seconds,
-  ).padStart(2, "0")}`;
+  const display = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+    2,
+    "0",
+  )}`;
 
   const circumference = 2 * Math.PI * 112;
   const progress = timeLeftMs / duration;
@@ -326,9 +326,7 @@ function Timer() {
             <div className="absolute inset-0 bg-black/40 rounded-2xl flex items-center justify-center z-10">
               <div className="bg-white rounded-2xl px-6 pt-6 pb-8 w-80 shadow-xl">
                 <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-gray-800 font-bold text-lg">
-                    Timer Settings
-                  </h2>
+                  <h2 className="text-gray-800 font-bold text-lg">Timer Settings</h2>
                   <div className="flex items-center gap-2">
                     <button
                       title="Reset to defaults"
@@ -359,9 +357,7 @@ function Timer() {
                   <div className="flex flex-col gap-1">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600 font-medium">Focus</span>
-                      <span className="text-gray-400">
-                        {settings.focusMinutes} min
-                      </span>
+                      <span className="text-gray-400">{settings.focusMinutes} min</span>
                     </div>
                     <input
                       type="range"
@@ -380,9 +376,7 @@ function Timer() {
                   </div>
                   <div className="flex flex-col gap-1">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 font-medium">
-                        Short Break
-                      </span>
+                      <span className="text-gray-600 font-medium">Short Break</span>
                       <span className="text-gray-400">
                         {settings.shortBreakMinutes} min
                       </span>
@@ -404,9 +398,7 @@ function Timer() {
                   </div>
                   <div className="flex flex-col gap-1">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600 font-medium">
-                        Long Break
-                      </span>
+                      <span className="text-gray-600 font-medium">Long Break</span>
                       <span className="text-gray-400">
                         {settings.longBreakMinutes} min
                       </span>
@@ -451,9 +443,7 @@ function Timer() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-600 font-medium text-sm">
-                      Sound
-                    </span>
+                    <span className="text-gray-600 font-medium text-sm">Sound</span>
                     <button
                       onClick={() =>
                         setSettings((prev) => ({
@@ -477,9 +467,7 @@ function Timer() {
                     </span>
                     <div className="flex items-center gap-2">
                       {notificationPermission === "denied" && (
-                        <span className="text-xs text-gray-400">
-                          blocked in browser
-                        </span>
+                        <span className="text-xs text-gray-400">blocked in browser</span>
                       )}
                       <button
                         onClick={() =>
@@ -563,10 +551,7 @@ function Timer() {
         )}
 
         <div className="relative flex items-center justify-center w-72 h-72">
-          <svg
-            className="absolute w-full h-full -rotate-90"
-            viewBox="0 0 280 280"
-          >
+          <svg className="absolute w-full h-full -rotate-90" viewBox="0 0 280 280">
             <circle cx="140" cy="140" r="132" fill="white" />
             <circle
               cx="140"
@@ -635,11 +620,7 @@ function Timer() {
           )}
           <button
             onClick={
-              isRunning
-                ? handlePause
-                : accumulatedMs > 0
-                  ? handleResume
-                  : handleStart
+              isRunning ? handlePause : accumulatedMs > 0 ? handleResume : handleStart
             }
             disabled={isRunning && timerMode === "strict"}
             className={`px-8 py-3 bg-white text-[#FF6B6B] rounded-3xl font-bold text-sm tracking-wide transition-transform ${
@@ -722,9 +703,7 @@ function Timer() {
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-20 rounded-2xl">
           <div className="bg-white rounded-3xl px-8 py-10 mx-6 flex flex-col items-center gap-4 text-center">
             <span className="text-6xl">🏆</span>
-            <h2 className="text-gray-800 text-2xl font-bold">
-              Congratulations!
-            </h2>
+            <h2 className="text-gray-800 text-2xl font-bold">Congratulations!</h2>
             <p className="text-gray-400 text-sm">
               You've completed all sessions for this task. Great work!
             </p>
