@@ -1,45 +1,13 @@
 import { useState } from "react";
 import TaskCard from "./TaskCard";
 import TaskForm from "./TaskForm";
+import { useTasks } from "../../hooks/useTasks";
+import { type Task } from "../../services/task.service";
 
-type Task = {
-  id: string;
-  title: string;
-  estimatedSessions: number;
-  completedSessions: number;
-  color: string;
-  isCompleted: boolean;
-};
 function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: "1",
-      title: "Build timer UI",
-      estimatedSessions: 5,
-      completedSessions: 4,
-      color: "#EF4444",
-      isCompleted: false,
-    },
-    {
-      id: "2",
-      title: "Write tests",
-      estimatedSessions: 4,
-      completedSessions: 1,
-      color: "#3B82F6",
-      isCompleted: false,
-    },
-    {
-      id: "3",
-      title: "Design landing page",
-      estimatedSessions: 6,
-      completedSessions: 6,
-      color: "#8B5CF6",
-      isCompleted: true,
-    },
-  ]);
-  const [activeFilter, setActiveFilter] = useState<
-    "all" | "active" | "completed"
-  >("all");
+  const TASK_COLORS = ["#EF4444", "#3B82F6", "#10B981", "#F97316", "#8B5CF6", "#14B8A6"];
+  const { tasks, isLoading, isError, createTask, completeTask, deleteTask } = useTasks();
+  const [activeFilter, setActiveFilter] = useState<"all" | "active" | "completed">("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const visibleTasks = tasks
     .filter((task) => {
@@ -51,39 +19,14 @@ function TaskList() {
       if (a.isCompleted === b.isCompleted) return 0;
       return a.isCompleted ? 1 : -1;
     });
-  function handleComplete(id: string) {
-    console.log("handleComplete clicked!");
 
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, isCompleted: !task.isCompleted } : task,
-      ),
-    );
+  async function handleComplete(id: string) {
+    await completeTask(id);
   }
 
-  function handleAddTask(title: string, estimatedSessions: number) {
-    const TASK_COLORS = [
-      "#EF4444",
-      "#3B82F6",
-      "#10B981",
-      "#F97316",
-      "#8B5CF6",
-      "#14B8A6",
-    ];
-
-    const randomColor =
-      TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)];
-    setTasks((prev) => [
-      {
-        id: crypto.randomUUID(),
-        title,
-        estimatedSessions,
-        completedSessions: 0,
-        color: randomColor,
-        isCompleted: false,
-      },
-      ...prev,
-    ]);
+  async function handleAddTask(title: string, estimatedSessions: number) {
+    const randomColor = TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)];
+    await createTask({ title, estimatedSessions, color: randomColor });
     setIsFormOpen(false);
   }
 
@@ -111,7 +54,21 @@ function TaskList() {
         ))}
       </div>
 
-      {visibleTasks.length === 0 ? (
+      {isLoading && (
+        <div className="flex justify-center py-12">
+          <p className="text-white/70 text-sm">Loading tasks...</p>
+        </div>
+      )}
+
+      {isError && (
+        <div className="flex justify-center py-12">
+          <p className="text-white/70 text-sm">
+            Failed to load tasks. Is the backend running?
+          </p>
+        </div>
+      )}
+
+      {!isLoading && !isError && visibleTasks.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 gap-2">
           <p className="text-white font-medium">No tasks yet</p>
           <p className="text-white/50 text-sm">Tap + Add Task to get started</p>

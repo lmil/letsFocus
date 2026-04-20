@@ -1,11 +1,4 @@
-type Task = {
-  id: string;
-  title: string;
-  estimatedSessions: number;
-  completedSessions: number;
-  color: string;
-  isCompleted: boolean;
-};
+import { type Task } from "../../services/task.service";
 
 type TaskCardProps = {
   task: Task;
