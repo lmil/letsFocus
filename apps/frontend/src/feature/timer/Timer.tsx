@@ -491,7 +491,7 @@ function Timer({ selectedTask }: TimerProps) {
             </div>
           )}
         </div>
-        {timerMode === "custom" ? (
+        {timerMode === "custom" && (
           <div className="flex items-center gap-3">
             <input
               type="number"
@@ -504,49 +504,9 @@ function Timer({ selectedTask }: TimerProps) {
               }}
               className="w-20 text-center bg-white/20 text-white font-bold text-sm rounded-full px-3 py-1.5 outline-none"
             />
-            <span className="text-white/70 text-sm font-medium">minutes</span>
-          </div>
-        ) : (
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setSessionType("FOCUS");
-                handleReset();
-              }}
-              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                sessionType === "FOCUS"
-                  ? "bg-white text-[#FF6B6B]"
-                  : "bg-white/20 text-white"
-              }`}
-            >
-              Focus
-            </button>
-            <button
-              onClick={() => {
-                setSessionType("SHORT_BREAK");
-                handleReset();
-              }}
-              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                sessionType === "SHORT_BREAK"
-                  ? "bg-white text-[#FF6B6B]"
-                  : "bg-white/20 text-white"
-              }`}
-            >
-              Short Break
-            </button>
-            <button
-              onClick={() => {
-                setSessionType("LONG_BREAK");
-                handleReset();
-              }}
-              className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                sessionType === "LONG_BREAK"
-                  ? "bg-white text-[#FF6B6B]"
-                  : "bg-white/20 text-white"
-              }`}
-            >
-              Long Break
-            </button>
+            <span className="text-white text-center bg-white/20 text-white font-bold text-sm rounded-full px-3 py-1.5 outline-none">
+              Minutes
+            </span>
           </div>
         )}
 
