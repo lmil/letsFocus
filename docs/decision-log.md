@@ -16,3 +16,7 @@ Why rejected: it creates two source of truth for `sessionType`. The backedn owns
 **Understand block:** Read TkDodo's Practical React Query.
 Key insight: sessionType seems like UI state because it lived in useState and tabs let the user change it directly. It's actually server state — the backend owns the cycle logic and returns nextSessionType.
 Removing the tabs was the correct fix because it removed the false impression that the user controls something the backend owns.
+
+## April 21, 2026
+
+**Built:** Replace client-side filter/sort in TaskList.tsx with API-driven query params: filter by completion status, search by tutke, sort by date or progress
