@@ -1,0 +1,1853 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#skip-to-content"
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - link "TkDodo's blog - Back to home" [ref=e8] [cursor=pointer]:
+          - /url: /blog
+          - text: TkDodo's blog
+        - button "Search (Meta+k)" [ref=e11] [cursor=pointer]:
+          - generic [ref=e12]:
+            - img [ref=e13]
+            - generic [ref=e16]: Search
+          - generic [ref=e17]:
+            - generic [ref=e18]: ⌘
+            - generic [ref=e19]: K
+      - generic [ref=e21]:
+        - generic [ref=e22]: Select theme
+        - img [ref=e23]
+        - combobox "Select theme" [ref=e25]:
+          - option "Dark"
+          - option "Light"
+          - option "Auto" [selected]
+    - generic [ref=e27]:
+      - navigation "Primary navigation" [ref=e28]:
+        - link "Blog" [ref=e29] [cursor=pointer]:
+          - /url: /blog/all
+        - link "Tags" [ref=e30] [cursor=pointer]:
+          - /url: /blog/tags
+        - link "Sponsors" [ref=e31] [cursor=pointer]:
+          - /url: /blog/sponsors
+        - link "Rss" [ref=e32] [cursor=pointer]:
+          - /url: /blog/rss.xml
+      - generic [ref=e33]:
+        - link "Bluesky" [ref=e34] [cursor=pointer]:
+          - /url: https://bsky.app/profile/tkdodo.eu
+        - link "GitHub" [ref=e35] [cursor=pointer]:
+          - /url: https://github.com/tkdodo
+  - main [ref=e37]:
+    - article [ref=e38]:
+      - heading "Practical React Query" [level=1] [ref=e39]
+      - generic [ref=e41]:
+        - text: Nov 16, 2020 —
+        - link "ReactJs" [ref=e42] [cursor=pointer]:
+          - /url: /blog/tags/reactjs
+        - text: ","
+        - link "React Query" [ref=e43] [cursor=pointer]:
+          - /url: /blog/tags/react-query
+      - generic [ref=e45]:
+        - img
+        - img "Practical React Query" [ref=e46]
+      - generic [ref=e48]:
+        - text: Photo by
+        - link "Lachlan Donald" [ref=e49] [cursor=pointer]:
+          - /url: https://unsplash.com/@lox
+      - paragraph [ref=e50]:
+        - strong [ref=e51]: "Last Update: 2023-10-21"
+      - generic [ref=e52]:
+        - list [ref=e54]:
+          - listitem [ref=e55]:
+            - generic [ref=e56]: "#1: Practical React QueryCurrent"
+          - listitem [ref=e57]:
+            - 'link "#2: React Query Data Transformations" [ref=e59] [cursor=pointer]':
+              - /url: ./react-query-data-transformations
+          - listitem [ref=e60]:
+            - 'link "#3: React Query Render Optimizations" [ref=e62] [cursor=pointer]':
+              - /url: ./react-query-render-optimizations
+          - listitem [ref=e63]:
+            - generic [ref=e64]:
+              - generic [ref=e65]: ⋮
+              - generic [ref=e66]: Later parts of the series are hidden
+        - group [ref=e67]:
+          - generic "All 32 parts in the series" [ref=e68] [cursor=pointer]
+      - list [ref=e70]:
+        - listitem [ref=e71]:
+          - link "한국어" [ref=e72] [cursor=pointer]:
+            - /url: https://highjoon-dev.vercel.app/blogs/1-practical-react-query/
+        - listitem [ref=e73]:
+          - link "Português" [ref=e74] [cursor=pointer]:
+            - /url: https://dbrno.vercel.app/pt-BR/blog/practical-react-query
+        - listitem [ref=e75]:
+          - link "Español" [ref=e76] [cursor=pointer]:
+            - /url: https://rubenvara.io/react-query/consejos-practicos-react-query/
+        - listitem [ref=e77]:
+          - link "简体中文" [ref=e78] [cursor=pointer]:
+            - /url: https://juejin.cn/post/7164602747361165349
+        - listitem [ref=e79]:
+          - link "Русский" [ref=e80] [cursor=pointer]:
+            - /url: https://garbalau-blog.vercel.app/blog/react-query-overview
+        - listitem [ref=e81]:
+          - link "Polski" [ref=e82] [cursor=pointer]:
+            - /url: https://medium.com/@grzegorz.chyla/react-query-w-praktyce-f1da6e334065
+        - listitem [ref=e83]:
+          - link "Add translation" [ref=e84] [cursor=pointer]:
+            - /url: https://github.com/TkDodo/blog/blob/main/CONTRIBUTING.md#translations
+      - paragraph [ref=e85]:
+        - text: When GraphQL and especially
+        - link "Apollo Client (opens in a new window)" [ref=e86] [cursor=pointer]:
+          - /url: https://www.apollographql.com/docs/react/
+          - text: Apollo Client
+          - generic [ref=e87]: (opens in a new window)
+        - text: became popular in ca. 2018, there was a lot of fuss about it completely replacing redux, and the question
+        - link "Is Redux dead yet? (opens in a new window)" [ref=e88] [cursor=pointer]:
+          - /url: https://dev.to/markerikson/redux---not-dead-yet-1d9k
+          - text: Is Redux dead yet?
+          - generic [ref=e89]: (opens in a new window)
+        - text: has been asked a lot.
+      - paragraph [ref=e90]: I distinctly remember not understanding what this was all about. Why would some data fetching library replace your global state manager? What does one even have to do with the other?
+      - paragraph [ref=e91]:
+        - text: I was under the impression that GraphQL clients like Apollo would only fetch the data for you, similar to what e.g.
+        - link "axios (opens in a new window)" [ref=e92] [cursor=pointer]:
+          - /url: https://github.com/axios/axios
+          - text: axios
+          - generic [ref=e93]: (opens in a new window)
+        - text: does for REST, and that you would still obviously need some way of making that data accessible to your application.
+      - paragraph [ref=e94]: I couldn’t have been more wrong.
+      - generic [ref=e95]:
+        - heading "Client State vs. Server State" [level=2] [ref=e96]
+        - 'link "Permalink: Client State vs. Server State" [ref=e97] [cursor=pointer]':
+          - /url: "#client-state-vs-server-state"
+          - img [ref=e98]
+      - paragraph [ref=e100]:
+        - text: What Apollo gives you is not just the ability to describe which data you want and to fetch that data, it also comes with a
+        - emphasis [ref=e101]: cache
+        - text: for that server data. This means that you can just use the same
+        - code [ref=e102]: useQuery
+        - text: hook in multiple components, and it will only fetch data once and then subsequently return it from the cache.
+      - paragraph [ref=e103]:
+        - text: This sounds
+        - emphasis [ref=e104]: very
+        - text: familiar with what we, and probably many other teams as well, have mainly been using
+        - code [ref=e105]: redux
+        - text: "for: Fetch data from the server and make it available everywhere."
+      - paragraph [ref=e106]:
+        - text: So it seems that we have always been treating this
+        - emphasis [ref=e107]: server state
+        - text: like any other
+        - emphasis [ref=e108]: client state
+        - text: . Except that when it comes to
+        - emphasis [ref=e109]: server state
+        - text: "(think: A list of articles that you fetch, the details of a User you want to display, …), your app does not own it. We have only borrowed it to display the most recent version of it on the screen for the user. It is the server who owns the data."
+      - paragraph [ref=e110]:
+        - text: To me, that introduced a paradigm shift in how to think about data. If we can leverage the cache to display data that we do not own, there isn’t really much left that is real client state that
+        - emphasis [ref=e111]: also
+        - text: needs to be made available to the whole app. That made me understand why many think that Apollo can replace redux in lots of instances.
+      - generic [ref=e112]:
+        - heading "React Query" [level=2] [ref=e113]
+        - 'link "Permalink: React Query" [ref=e114] [cursor=pointer]':
+          - /url: "#react-query"
+          - img [ref=e115]
+      - paragraph [ref=e117]: I have never had the chance to use GraphQL. We have an existing REST API, don’t really experience problems with over-fetching, it just works, etc. Clearly, there aren’t enough pain points for us to warrant a switch, especially given that you’d also have to adapt the backend, which isn’t quite so simple.
+      - paragraph [ref=e118]: Yet I still envied the simplicity of how data fetching can look like on the frontend, including the handling of loading and error states. If only there were something similar in React for REST APIs…
+      - paragraph [ref=e119]:
+        - text: Enter
+        - link "React Query (opens in a new window)" [ref=e120] [cursor=pointer]:
+          - /url: https://tanstack.com/query/latest/
+          - text: React Query
+          - generic [ref=e121]: (opens in a new window)
+        - text: .
+      - paragraph [ref=e122]:
+        - text: Made by the open sourcerer
+        - link "Tanner Linsley (opens in a new window)" [ref=e123] [cursor=pointer]:
+          - /url: https://github.com/tannerlinsley
+          - text: Tanner Linsley
+          - generic [ref=e124]: (opens in a new window)
+        - text: in late 2019, React Query takes the good parts of Apollo and brings them to REST. It works with any function that returns a Promise and embraces the
+        - emphasis [ref=e125]: stale-while-revalidate
+        - text: caching strategy. The library operates on sane defaults that try to keep your data as fresh as possible while at the same time showing data to the user as early as possible, making it feel near instant at times and thus providing a great UX. On top of that, it is also very flexible and lets you customize various settings for when the defaults are not enough.
+      - paragraph [ref=e126]: This article is not going to be an introduction to React Query though.
+      - paragraph [ref=e127]:
+        - text: I think the docs are great at explaining Guides & Concepts, there are
+        - link "Videos (opens in a new window)" [ref=e128] [cursor=pointer]:
+          - /url: https://tanstack.com/query/latest/docs/react/videos
+          - text: Videos
+          - generic [ref=e129]: (opens in a new window)
+        - text: from various Talks that you can watch, and Tanner has a React Query
+        - link "Essentials Course (opens in a new window)" [ref=e130] [cursor=pointer]:
+          - /url: https://learn.tanstack.com/
+          - text: Essentials Course
+          - generic [ref=e131]: (opens in a new window)
+        - text: you can take if you want to get familiar with the library.
+      - complementary [ref=e132]:
+        - generic [ref=e133]:
+          - generic [ref=e134]: Update
+          - img [ref=e135]
+        - generic [ref=e138]:
+          - paragraph [ref=e139]:
+            - text: I’ve been working on a brand new course together with
+            - link "ui.dev (opens in a new window)" [ref=e140] [cursor=pointer]:
+              - /url: https://ui.dev/
+              - text: ui.dev
+              - generic [ref=e141]: (opens in a new window)
+            - text: . If you enjoy the content I’ve been creating so far, you’ll love
+            - link "query.gg (opens in a new window)" [ref=e142] [cursor=pointer]:
+              - /url: https://query.gg/?s=dom
+              - text: query.gg
+              - generic [ref=e143]: (opens in a new window)
+            - text: .
+          - link "Query.gg - The official React Query course" [ref=e144] [cursor=pointer]:
+            - /url: https://query.gg/?s=dom
+            - img "Query.gg - The official React Query course" [ref=e145]
+      - paragraph [ref=e146]: I want to focus more on some practical tips that go beyond the docs, which might be useful when you are already working with the library. These are things I have picked up over the last couple of months when I was not only actively using the library at work, but also got involved in the React Query community, answering questions on Discord and in GitHub Discussions.
+      - generic [ref=e147]:
+        - heading "The Defaults explained" [level=3] [ref=e148]
+        - 'link "Permalink: The Defaults explained" [ref=e149] [cursor=pointer]':
+          - /url: "#the-defaults-explained"
+          - img [ref=e150]
+      - paragraph [ref=e152]:
+        - text: I believe the React Query
+        - link "Defaults (opens in a new window)" [ref=e153] [cursor=pointer]:
+          - /url: https://tanstack.com/query/latest/docs/react/guides/important-defaults
+          - text: Defaults
+          - generic [ref=e154]: (opens in a new window)
+        - text: are very well-chosen, but they can catch you off guard from time to time, especially at the beginning.
+      - paragraph [ref=e155]:
+        - text: "First of all: React Query does"
+        - emphasis [ref=e156]: not
+        - text: invoke the
+        - code [ref=e157]: queryFn
+        - text: on every re-render, even with the default
+        - code [ref=e158]: staleTime
+        - text: of zero. Your app can re-render for various reasons at any time, so fetching every time would be insane!
+      - blockquote [ref=e159]:
+        - paragraph [ref=e160]: Always code for re-renders, and a lot of them. I like to call it render resiliency.
+      - paragraph [ref=e161]: — Tanner Linsley
+      - paragraph [ref=e162]:
+        - text: If you see a refetch that you are not expecting, it is likely because you just focused the window and React Query is doing a
+        - code [ref=e163]: refetchOnWindowFocus
+        - text: ", which is a great feature for production: If the user goes to a different browser tab, and then comes back to your app, a background refetch will be triggered automatically, and data on the screen will be updated if something has changed on the server in the meantime. All of this happens without a loading spinner being shown, and your component will not re-render if the data is the same as you currently have in the cache."
+      - paragraph [ref=e164]: During development, this will probably be triggered more frequently, especially because focusing between the Browser DevTools and your app will also cause a fetch, so be aware of that.
+      - complementary [ref=e165]:
+        - generic [ref=e166]:
+          - generic [ref=e167]: Update
+          - img [ref=e168]
+        - paragraph [ref=e172]:
+          - text: Since React Query v5,
+          - code [ref=e173]: refetchOnWindowFocus
+          - text: no longer listens to the
+          - code [ref=e174]: focus
+          - text: event - the
+          - code [ref=e175]: visibilitychange
+          - text: event is used exclusively. This means you’ll get fewer unwanted re-fetches in development mode, while still retaining the trigger for most production cases. It also fixes a bunch of issues as
+          - link "shown here (opens in a new window)" [ref=e176] [cursor=pointer]:
+            - /url: https://github.com/TanStack/query/pull/4805
+            - text: shown here
+            - generic [ref=e177]: (opens in a new window)
+          - text: .
+      - paragraph [ref=e178]:
+        - text: Secondly, there seems to be a bit of confusion between
+        - code [ref=e179]: gcTime
+        - text: and
+        - code [ref=e180]: staleTime
+        - text: ", so let me try to clear that up:"
+      - list [ref=e181]:
+        - listitem [ref=e182]:
+          - code [ref=e183]: staleTime
+          - text: ": The duration until a query transitions from fresh to stale. As long as the query is fresh, data will always be read from the cache only - no network request will happen! If the query is stale (which per default is: instantly), you will still get data from the cache, but a background refetch can happen"
+          - link "under certain conditions (opens in a new window)" [ref=e184] [cursor=pointer]:
+            - /url: https://tanstack.com/query/latest/docs/react/guides/caching
+            - text: under certain conditions
+            - generic [ref=e185]: (opens in a new window)
+          - text: .
+        - listitem [ref=e186]:
+          - code [ref=e187]: gcTime
+          - text: ": The duration until inactive queries will be removed from the cache. This defaults to 5 minutes. Queries transition to the inactive state as soon as there are no observers registered, so when all components which use that query have unmounted."
+      - paragraph [ref=e188]:
+        - text: Most of the time, if you want to change one of these settings, it’s the
+        - code [ref=e189]: staleTime
+        - text: that needs adjusting. I have rarely ever needed to tamper with the
+        - code [ref=e190]: gcTime
+        - text: . There is a good
+        - link "explanation by example (opens in a new window)" [ref=e191] [cursor=pointer]:
+          - /url: https://tanstack.com/query/latest/docs/react/guides/caching#basic-example
+          - text: explanation by example
+          - generic [ref=e192]: (opens in a new window)
+        - text: in the docs as well.
+      - complementary [ref=e193]:
+        - generic [ref=e194]:
+          - generic [ref=e195]: Update
+          - img [ref=e196]
+        - paragraph [ref=e200]:
+          - code [ref=e201]: gcTime
+          - text: was previously known as
+          - code [ref=e202]: cacheTime
+          - text: ", but it got renamed in v5 to better reflect what it’s doing."
+      - generic [ref=e203]:
+        - heading "Use the React Query DevTools" [level=3] [ref=e204]
+        - 'link "Permalink: Use the React Query DevTools" [ref=e205] [cursor=pointer]':
+          - /url: "#use-the-react-query-devtools"
+          - img [ref=e206]
+      - paragraph [ref=e208]: This will help you immensely in understanding the state a query is in. The DevTools will also tell you what data is currently in the cache, so you’ll have an easier time debugging. In addition to that, I have found that it helps to throttle your network connection in the browser DevTools if you want to better recognize background refetches, since dev-servers are usually pretty fast.
+      - generic [ref=e209]:
+        - heading "Treat the query key like a dependency array" [level=3] [ref=e210]
+        - 'link "Permalink: Treat the query key like a dependency array" [ref=e211] [cursor=pointer]':
+          - /url: "#treat-the-query-key-like-a-dependency-array"
+          - img [ref=e212]
+      - paragraph [ref=e214]:
+        - text: I am referring to the dependency array of the
+        - link "useEffect (opens in a new window)" [ref=e215] [cursor=pointer]:
+          - /url: https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect
+          - text: useEffect
+          - generic [ref=e216]: (opens in a new window)
+        - text: hook here, which I assume you are familiar with.
+      - paragraph [ref=e217]: Why are these two similar?
+      - paragraph [ref=e218]:
+        - text: Because React Query will trigger a refetch whenever the query key changes. So when we pass a variable parameter to our
+        - code [ref=e219]: queryFn
+        - text: ", we almost always want to fetch data when that value changes. Instead of orchestrating complex effects to manually trigger a refetch, we can utilize the query key:"
+      - 'figure "feature/todos/queries.ts Permalink: feature/todos/queries.ts" [ref=e221]':
+        - generic [ref=e223]:
+          - img [ref=e224]
+          - text: feature/todos/queries.ts
+          - 'link "Permalink: feature/todos/queries.ts" [ref=e226] [cursor=pointer]':
+            - /url: "#feature-todos-queries-ts"
+            - img [ref=e227]
+        - code [ref=e230]:
+          - generic [ref=e231]:
+            - generic [ref=e232]:
+              - generic: "1"
+            - generic [ref=e233]: type State = 'all' | 'open' | 'done'
+          - generic [ref=e234]:
+            - generic [ref=e235]:
+              - generic: "2"
+            - generic [ref=e236]: "type Todo = {"
+          - generic [ref=e237]:
+            - generic [ref=e238]:
+              - generic: "3"
+            - generic [ref=e239]: "id: number"
+          - generic [ref=e241]:
+            - generic [ref=e242]:
+              - generic: "4"
+            - generic [ref=e243]: "state: State"
+          - generic [ref=e245]:
+            - generic [ref=e246]:
+              - generic: "5"
+            - generic [ref=e247]: "}"
+          - generic [ref=e248]:
+            - generic [ref=e249]:
+              - generic: "6"
+            - generic [ref=e250]: type Todos = ReadonlyArray<Todo>
+          - generic [ref=e252]:
+            - generic: "7"
+          - generic [ref=e254]:
+            - generic [ref=e255]:
+              - generic: "8"
+            - generic [ref=e256]: "const fetchTodos = async (state: State): Promise<Todos> => {"
+          - generic [ref=e257]:
+            - generic [ref=e258]:
+              - generic: "9"
+            - generic [ref=e259]: "const response = await axios.get(`todos/${state}`)"
+          - generic [ref=e260]:
+            - generic [ref=e261]:
+              - generic: "10"
+            - generic [ref=e262]: return response.data
+          - generic [ref=e264]:
+            - generic [ref=e265]:
+              - generic: "11"
+            - generic [ref=e266]: "}"
+          - generic [ref=e268]:
+            - generic: "12"
+          - generic [ref=e270]:
+            - generic [ref=e271]:
+              - generic: "13"
+            - generic [ref=e272]: "export const useTodosQuery = (state: State) =>"
+          - generic [ref=e273]:
+            - generic [ref=e274]:
+              - generic: "14"
+            - generic [ref=e275]: "useQuery({"
+          - generic [ref=e276]:
+            - generic [ref=e277]:
+              - generic: "15"
+            - generic [ref=e278]: "queryKey: ['todos', state],"
+          - generic [ref=e280]:
+            - generic [ref=e281]:
+              - generic: "16"
+            - generic [ref=e282]: "queryFn: () => fetchTodos(state),"
+          - generic [ref=e283]:
+            - generic [ref=e284]:
+              - generic: "17"
+            - generic [ref=e285]: "})"
+        - button "Copy to clipboard" [ref=e287] [cursor=pointer]
+      - paragraph [ref=e289]:
+        - text: Here, imagine that our UI displays a list of todos along with a filter option. We would have some local state to store that filtering, and as soon as the user changes their selection, we would update that local state, and React Query will automatically trigger the refetch for us, because the query key changes. We are thus keeping the user’s filter selection
+        - emphasis [ref=e290]: in sync
+        - text: with the query function, which is very similar to what a dependency array represents for useEffect. I don’t think I have ever passed a variable to the
+        - code [ref=e291]: queryFn
+        - text: that was
+        - emphasis [ref=e292]: not
+        - text: part of the
+        - code [ref=e293]: queryKey
+        - text: ", too."
+      - generic [ref=e294]:
+        - heading "A new cache entry" [level=4] [ref=e295]
+        - 'link "Permalink: A new cache entry" [ref=e296] [cursor=pointer]':
+          - /url: "#a-new-cache-entry"
+          - img [ref=e297]
+      - paragraph [ref=e299]:
+        - text: Because the query key is used as a key for the cache, you will get a new cache entry when you switch from ‘all’ to ‘done’, and that will result in a hard loading state (probably showing a loading spinner) when you switch for the first time. This is certainly not ideal, so if possible, we can try to pre-fill the newly created cache entry with
+        - link "initialData (opens in a new window)" [ref=e300] [cursor=pointer]:
+          - /url: https://tanstack.com/query/latest/docs/react/guides/initial-query-data#initial-data-from-cache
+          - text: initialData
+          - generic [ref=e301]: (opens in a new window)
+        - text: ". The above example is perfect for that, because we can do some client side pre-filtering on our todos:"
+      - 'figure "pre filtering Permalink: pre filtering" [ref=e303]':
+        - generic [ref=e305]:
+          - img [ref=e306]
+          - text: pre filtering
+          - 'link "Permalink: pre filtering" [ref=e308] [cursor=pointer]':
+            - /url: "#pre-filtering"
+            - img [ref=e309]
+        - code [ref=e312]:
+          - generic [ref=e313]:
+            - generic [ref=e314]:
+              - generic: "1"
+            - generic [ref=e315]: type State = 'all' | 'open' | 'done'
+          - generic [ref=e316]:
+            - generic [ref=e317]:
+              - generic: "2"
+            - generic [ref=e318]: "type Todo = {"
+          - generic [ref=e319]:
+            - generic [ref=e320]:
+              - generic: "3"
+            - generic [ref=e321]: "id: number"
+          - generic [ref=e323]:
+            - generic [ref=e324]:
+              - generic: "4"
+            - generic [ref=e325]: "state: State"
+          - generic [ref=e327]:
+            - generic [ref=e328]:
+              - generic: "5"
+            - generic [ref=e329]: "}"
+          - generic [ref=e330]:
+            - generic [ref=e331]:
+              - generic: "6"
+            - generic [ref=e332]: type Todos = ReadonlyArray<Todo>
+          - generic [ref=e334]:
+            - generic: "7"
+          - generic [ref=e336]:
+            - generic [ref=e337]:
+              - generic: "8"
+            - generic [ref=e338]: "const fetchTodos = async (state: State): Promise<Todos> => {"
+          - generic [ref=e339]:
+            - generic [ref=e340]:
+              - generic: "9"
+            - generic [ref=e341]: "const response = await axios.get(`todos/${state}`)"
+          - generic [ref=e342]:
+            - generic [ref=e343]:
+              - generic: "10"
+            - generic [ref=e344]: return response.data
+          - generic [ref=e346]:
+            - generic [ref=e347]:
+              - generic: "11"
+            - generic [ref=e348]: "}"
+          - generic [ref=e350]:
+            - generic: "12"
+          - generic [ref=e352]:
+            - generic [ref=e353]:
+              - generic: "13"
+            - generic [ref=e354]: "export const useTodosQuery = (state: State) =>"
+          - generic [ref=e355]:
+            - generic [ref=e356]:
+              - generic: "14"
+            - generic [ref=e357]: "useQuery({"
+          - generic [ref=e358]:
+            - generic [ref=e359]:
+              - generic: "15"
+            - generic [ref=e360]: "queryKey: ['todos', state],"
+          - generic [ref=e362]:
+            - generic [ref=e363]:
+              - generic: "16"
+            - generic [ref=e364]: "queryFn: () => fetchTodos(state),"
+          - generic [ref=e365]:
+            - generic [ref=e366]:
+              - generic: "17"
+            - generic [ref=e367]: "initialData: () => {"
+          - generic [ref=e368]:
+            - generic [ref=e369]:
+              - generic: "18"
+            - generic [ref=e370]: const allTodos = queryClient.getQueryData<Todos>([
+          - generic [ref=e371]:
+            - generic [ref=e372]:
+              - generic: "19"
+            - generic [ref=e373]: "'todos',"
+          - generic [ref=e374]:
+            - generic [ref=e375]:
+              - generic: "20"
+            - generic [ref=e376]: "'all',"
+          - generic [ref=e377]:
+            - generic [ref=e378]:
+              - generic: "21"
+            - generic [ref=e379]: "])"
+          - generic [ref=e380]:
+            - generic [ref=e381]:
+              - generic: "22"
+            - generic [ref=e382]: const filteredData =
+          - generic [ref=e383]:
+            - generic [ref=e384]:
+              - generic: "23"
+            - generic [ref=e385]: allTodos?.filter((todo) => todo.state === state) ?? []
+          - generic [ref=e387]:
+            - generic: "24"
+          - generic [ref=e389]:
+            - generic [ref=e390]:
+              - generic: "25"
+            - generic [ref=e391]:
+              - generic [ref=e392]: return
+              - text: "filteredData.length > 0 ? filteredData : undefined"
+          - generic [ref=e394]:
+            - generic [ref=e395]:
+              - generic: "26"
+            - generic [ref=e396]: "},"
+          - generic [ref=e397]:
+            - generic [ref=e398]:
+              - generic: "27"
+            - generic [ref=e399]: "})"
+        - button "Copy to clipboard" [ref=e401] [cursor=pointer]
+      - paragraph [ref=e403]: Now, every time the user switches between states, if we don’t have data yet, we try to show data from the ‘all todos’ cache. We can instantly show the ‘done’ todos that we have to the user, and they will still see the updated list once the background fetch finishes.
+      - paragraph [ref=e404]: I think this is a great ux improvement for just a few lines of code.
+      - generic [ref=e405]:
+        - heading "Keep server and client state separate" [level=3] [ref=e406]
+        - 'link "Permalink: Keep server and client state separate" [ref=e407] [cursor=pointer]':
+          - /url: "#keep-server-and-client-state-separate"
+          - img [ref=e408]
+      - paragraph [ref=e410]:
+        - text: This goes hand in hand with
+        - link "putting-props-to-use-state" [ref=e411] [cursor=pointer]:
+          - /url: ./putting-props-to-use-state
+        - text: ", an article I have written last month: If you get data from"
+        - code [ref=e412]: useQuery
+        - text: ", try not to put that data into local state. The main reason is that you implicitly opt out of all background updates that React Query does for you, because the state “copy” will not update with it."
+      - paragraph [ref=e413]:
+        - text: This is fine if you want to e.g. fetch some default values for a Form, and render your Form once you have data. Background updates are very unlikely to yield something new, and even if, your Form has already been initialized. So if you do that on purpose, make sure to
+        - emphasis [ref=e414]: not
+        - text: fire off unnecessary background refetches by setting
+        - code [ref=e415]: staleTime
+        - text: ":"
+      - 'figure "initial form data Permalink: initial form data" [ref=e417]':
+        - generic [ref=e419]:
+          - img [ref=e420]
+          - text: initial form data
+          - 'link "Permalink: initial form data" [ref=e425] [cursor=pointer]':
+            - /url: "#initial-form-data"
+            - img [ref=e426]
+        - code [ref=e429]:
+          - generic [ref=e430]:
+            - generic [ref=e431]:
+              - generic: "1"
+            - generic [ref=e432]: "const App = () => {"
+          - generic [ref=e433]:
+            - generic [ref=e434]:
+              - generic: "2"
+            - generic [ref=e435]: "const { data } = useQuery({"
+          - generic [ref=e436]:
+            - generic [ref=e437]:
+              - generic: "3"
+            - generic [ref=e438]: "queryKey: ['key'],"
+          - generic [ref=e440]:
+            - generic [ref=e441]:
+              - generic: "4"
+            - generic [ref=e442]: queryFn,
+          - generic [ref=e443]:
+            - generic [ref=e444]:
+              - generic: "5"
+            - generic [ref=e445]: "staleTime: Infinity,"
+          - generic [ref=e447]:
+            - generic [ref=e448]:
+              - generic: "6"
+            - generic [ref=e449]: "})"
+          - generic [ref=e451]:
+            - generic: "7"
+          - generic [ref=e453]:
+            - generic [ref=e454]:
+              - generic: "8"
+            - generic [ref=e455]: "return data ? <MyForm initialData={data} /> : null"
+          - generic [ref=e457]:
+            - generic [ref=e458]:
+              - generic: "9"
+            - generic [ref=e459]: "}"
+          - generic [ref=e461]:
+            - generic: "10"
+          - generic [ref=e463]:
+            - generic [ref=e464]:
+              - generic: "11"
+            - generic [ref=e465]: "const MyForm = ({ initialData }) => {"
+          - generic [ref=e466]:
+            - generic [ref=e467]:
+              - generic: "12"
+            - generic [ref=e468]:
+              - text: const [data, setData] = React.useState
+              - generic [ref=e469]: (initialData)
+          - generic [ref=e470]:
+            - generic [ref=e471]:
+              - generic: "13"
+            - generic [ref=e472]: ...
+          - generic [ref=e473]:
+            - generic [ref=e474]:
+              - generic: "14"
+            - generic [ref=e475]: "}"
+        - button "Copy to clipboard" [ref=e477] [cursor=pointer]
+      - paragraph [ref=e479]: "This concept will be a bit harder to follow through when you display data that you also want to allow the user to edit, but it has many advantages. I have prepared a little codesandbox example:"
+      - iframe [ref=e480]:
+        - generic [active] [ref=f1e1]:
+          - heading "Loading Sandbox..." [level=1] [ref=f1e6]
+          - text: ": resolveFrom(path.resolve('node_modules'), 'react-dom'),\\n },\\n }\\n return config\\n}\\n\\nconst includeSrcDirectory = config =\\u003E {\\n config.resolve = {\\n ...config.resolve,\\n modules: [path.resolve('src'), ...config.resolve.modules],\\n }\\n return config\\n}\\n\\nmodule.exports = [\\n ['use-babel-config', '.babelrc'],\\n ['use-eslint-config', '.eslintrc'],\\n fixLinkedDependencies,\\n \\u002F\\u002F includeSrcDirectory,\\n]\\n\",\"id\":\"mod_QJ9N8WN1bwLQd7ixE54yDc\",\"is_binary\":false,\"title\":\".rescriptsrc.js\",\"sha\":null,\"inserted_at\":\"2020-11-03T07:55:54\",\"updated_at\":\"2020-11-02T16:38:57\",\"upload_id\":null,\"shortid\":\"B1B5mU3TdD\",\"source_id\":\"src_3UkuQiWnLFEKpi92wyXLzG\",\"directory_shortid\":null},{\"code\":\"{}\\n\",\"id\":\"mod_NtZpmqJTuyxLpz8x88ZKeW\",\"is_binary\":false,\"title\":\".prettierrc\",\"sha\":null,\"inserted_at\":\"2020-11-03T07:55:54\",\"updated_at\":\"2020-11-02T16:38:57\",\"upload_id\":null,\"shortid\":\"SkVqm836uD\",\"source_id\":\"src_3UkuQiWnLFEKpi92wyXLzG\",\"directory_shortid\":null},{\"code\":\"# See https:\\u002F\\u002Fhelp.github.com\\u002Farticles\\u002Fignoring-files\\u002F for more about ignoring files.\\n\\n# dependencies\\n\\u002Fnode_modules\\n\\u002F.pnp\\n.pnp.js\\n\\n# testing\\n\\u002Fcoverage\\n\\n# production\\n\\u002Fbuild\\n\\nyarn.lock\\npackage-lock.json\\n\\n# misc\\n.DS_Store\\n.env.local\\n.env.development.local\\n.env.test.local\\n.env.production.local\\n\\nnpm-debug.log*\\nyarn-debug.log*\\nyarn-error.log*\\n\",\"id\":\"mod_SDjmuZ76mMmErr2CAAxBEK\",\"is_binary\":false,\"title\":\".gitignore\",\"sha\":null,\"inserted_at\":\"2020-11-03T07:55:54\",\"updated_at\":\"2020-11-02T16:38:57\",\"upload_id\":null,\"shortid\":\"SkmqQLnpdw\",\"source_id\":\"src_3UkuQiWnLFEKpi92wyXLzG\",\"directory_shortid\":null},{\"code\":\"{\\n \\\"extends\\\": [\\\"react-app\\\", \\\"prettier\\\"],\\n \\\"rules\\\": {\\n \\u002F\\u002F \\\"eqeqeq\\\": 0,\\n \\u002F\\u002F \\\"jsx-a11y\\u002Fanchor-is-valid\\\": 0\\n }\\n}\\n\",\"id\":\"mod_8mqzTbMUJWejvknF4hagbc\",\"is_binary\":false,\"title\":\".eslintrc\",\"sha\":null,\"inserted_at\":\"2020-11-03T07:55:54\",\"updated_at\":\"2020-11-02T16:38:57\",\"upload_id\":null,\"shortid\":\"B1Mq7L2pdD\",\"source_id\":\"src_3UkuQiWnLFEKpi92wyXLzG\",\"directory_shortid\":null},{\"code\":\"{\\n \\\"private\\\": true,\\n \\\"scripts\\\": {\\n \\\"start\\\": \\\"rescripts start\\\",\\n \\\"build\\\": \\\"rescripts build\\\",\\n \\\"test\\\": \\\"rescripts test\\\",\\n \\\"eject\\\": \\\"rescripts eject\\\"\\n },\\n \\\"dependencies\\\": {\\n \\\"react\\\": \\\"^16.8.6\\\",\\n \\\"react-dom\\\": \\\"^16.8.6\\\",\\n \\\"react-query\\\": \\\"2.26.2\\\",\\n \\\"react-query-devtools\\\": \\\"2.6.3\\\",\\n \\\"react-scripts\\\": \\\"3.0.1\\\"\\n },\\n \\\"devDependencies\\\": {\\n \\\"@rescripts\\u002Fcli\\\": \\\"^0.0.11\\\",\\n \\\"@rescripts\\u002Frescript-use-babel-config\\\": \\\"^0.0.8\\\",\\n \\\"@rescripts\\u002Frescript-use-eslint-config\\\": \\\"^0.0.9\\\",\\n \\\"babel-eslint\\\": \\\"10.0.1\\\"\\n },\\n \\\"browserslist\\\": {\\n \\\"production\\\": [\\n \\\"\\u003E0.2%\\\",\\n \\\"not dead\\\",\\n \\\"not op_mini all\\\"\\n ],\\n \\\"development\\\": [\\n \\\"last 1 chrome version\\\",\\n \\\"last 1 firefox version\\\",\\n \\\"last 1 safari version\\\"\\n ]\\n },\\n \\\"keywords\\\": [],\\n \\\"name\\\": \\\"separate-server-and-client-state\\\",\\n \\\"description\\\": \\\"\\\"\\n}\",\"id\":\"mod_XpXWGjVbuBDpSMVhtbnrQJ\",\"is_binary\":false,\"title\":\"package.json\",\"sha\":null,\"inserted_at\":\"2020-11-03T07:55:54\",\"updated_at\":\"2020-11-16T16:08:43\",\"upload_id\":null,\"shortid\":\"HkP9XUn6dD\",\"source_id\":\"src_3UkuQiWnLFEKpi92wyXLzG\",\"directory_shortid\":null},{\"code\":\"import React from \\\"react\\\";\\nimport ReactDOM from \\\"react-dom\\\";\\nimport { useQuery, QueryCache, ReactQueryCacheProvider } from \\\"react-query\\\";\\nimport { ReactQueryDevtools } from \\\"react-query-devtools\\\";\\n\\nconst queryCache = new QueryCache();\\n\\nexport default function App() {\\n return (\\n \\u003CReactQueryCacheProvider queryCache={queryCache}\\u003E\\n \\u003CExample \\u002F\\u003E\\n \\u003C\\u002FReactQueryCacheProvider\\u003E\\n );\\n}\\n\\nfunction Example() {\\n const [isOpen, setIsOpen] = React.useState(false);\\n\\n return (\\n \\u003Cdiv\\u003E\\n \\u003Cul\\u003E\\n \\u003Cli\\u003EOpen the Modal\\u003C\\u002Fli\\u003E\\n \\u003Cli\\u003E\\n It will load a random number and show it, but not put it to state\\n \\u003C\\u002Fli\\u003E\\n \\u003Cli\\u003ERe-focus the window - the value will still update\\u003C\\u002Fli\\u003E\\n \\u003Cli\\u003E\\n Change the value: Your draft now takes precedence and the query is\\n disabled\\n \\u003C\\u002Fli\\u003E\\n \\u003Cli\\u003E\\n Close the modal and open it again: No loading spinner, value will\\n update\\n \\u003C\\u002Fli\\u003E\\n \\u003C\\u002Ful\\u003E\\n \\u003Cbutton type=\\\"button\\\" onClick={() =\\u003E setIsOpen(true)}\\u003E\\n Open\\n \\u003C\\u002Fbutton\\u003E\\n {isOpen && \\u003CModal close={() =\\u003E setIsOpen(false)} \\u002F\\u003E}\\n \\u003CReactQueryDevtools\\n initialIsOpen\\n panelProps={{ style: { height: 250 } }}\\n \\u002F\\u003E\\n \\u003C\\u002Fdiv\\u003E\\n );\\n}\\n\\nconst sleep = (time) =\\u003E new Promise((resolve) =\\u003E setTimeout(resolve, time));\\n\\nconst useRandomValue = () =\\u003E {\\n const [draft, setDraft] = React.useState(undefined);\\n const { data, ...queryInfo } = useQuery(\\n \\\"random\\\",\\n async () =\\u003E {\\n await sleep(1000);\\n return Promise.resolve(String(Math.random()));\\n },\\n {\\n enabled: typeof draft === \\\"undefined\\\"\\n }\\n );\\n\\n return {\\n value: draft ?? data,\\n setDraft,\\n queryInfo\\n };\\n};\\n\\nfunction Modal({ close }) {\\n const {\\n value,\\n setDraft,\\n queryInfo: { isLoading, error }\\n } = useRandomValue();\\n\\n return (\\n \\u003Cdiv\\n style={{\\n position: \\\"fixed\\\",\\n top: \\\"0\\\",\\n left: \\\"0\\\",\\n paddingTop: \\\"10px\\\",\\n width: \\\"100%\\\",\\n height: \\\"100%\\\",\\n backgroundColor: \\\"rgba(0,0,0,0.4)\\\"\\n }}\\n \\u003E\\n \\u003Cdiv\\n style={{\\n display: \\\"flex\\\",\\n justifyContent: \\\"center\\\",\\n width: \\\"80%\\\",\\n height: \\\"25vh\\\",\\n margin: \\\"auto\\\",\\n backgroundColor: \\\"white\\\"\\n }}\\n \\u003E\\n \\u003Cdiv\\u003E\\n {isLoading && \\\"Loading...\\\"}\\n {error && \\\"error\\\"}\\n {value !== undefined && (\\n \\u003Cinput\\n type=\\\"text\\\"\\n value={value}\\n onChange={(event) =\\u003E setDraft(event.target.value)}\\n \\u002F\\u003E\\n )}\\n \\u003Cspan style={{ cursor: \\\"pointer\\\" }} onClick={close}\\u003E\\n ×\\n \\u003C\\u002Fspan\\u003E\\n \\u003C\\u002Fdiv\\u003E\\n \\u003C\\u002Fdiv\\u003E\\n \\u003C\\u002Fdiv\\u003E\\n );\\n}\\n\\nconst rootElement = document.getElementById(\\\"root\\\");\\nReactDOM.render(\\u003CApp \\u002F\\u003E, rootElement);\\n\",\"id\":\"mod_7xvZo4X1P6qpE2hCjDFYpm\",\"is_binary\":false,\"title\":\"index.js\",\"sha\":null,\"inserted_at\":\"2020-11-03T07:55:54\",\"updated_at\":\"2023-07-14T10:37:31\",\"upload_id\":null,\"shortid\":\"By9c78hTdD\",\"source_id\":\"src_3UkuQiWnLFEKpi92wyXLzG\",\"directory_shortid\":\"Hke5QIhTdw\"}],\"external_resources\":[],\"restrictions\":{\"free_plan_editing_restricted\":false,\"live_sessions_restricted\":true},\"feature_flags\":{\"comments\":false,\"container_lsp\":false},\"original_git_commit_sha\":\"5d56cf5c28f3e8a55183d45e31d3e5bc88a36f57\",\"view_count\":4898703,\"version\":53,\"user_liked\":false,\"forked_template_sandbox\":{\"alias\":\"tannerlinsley-react-query-simple-1wpf6\",\"id\":\"1wpf6\",\"title\":\"tannerlinsley\\u002Freact-query: simple\",\"template\":\"create-react-app\",\"inserted_at\":\"2020-11-02T14:35:08\",\"updated_at\":\"2022-05-29T18:09:07\",\"git\":{\"path\":\"examples\\u002Fsimple\",\"branch\":\"master\",\"repo\":\"react-query\",\"username\":\"tannerlinsley\",\"commit_sha\":\"9f6c992feecb4694758f8767063d8ad89d842c3c\"},\"privacy\":0,\"sdk\":false,\"custom_template\":{\"id\":\"sbtempl_9hyPvs2UyMAXXntByCfjb2\",\"title\":\"tannerlinsley\\u002Freact-query: simple\",\"v2\":false,\"color\":\"#61DAFB\",\"url\":null,\"published\":false,\"sdk\":false,\"icon_url\":\"github\",\"official\":false}},\"sdk\":false,\"forked_template\":{\"id\":\"sbtempl_9hyPvs2UyMAXXntByCfjb2\",\"title\":\"tannerlinsley\\u002Freact-query: simple\",\"v2\":false,\"color\":\"#61DAFB\",\"url\":null,\"published\":false,\"sdk\":false,\"icon_url\":\"github\",\"official\":false},\"id\":\"rp3jx\",\"base_git\":null,\"forked_from_sandbox\":null,\"original_git\":null,\"screenshot_url\":\"https:\\u002F\\u002Fscreenshots.codesandbox.io\\u002Frp3jx\\u002F53.png\",\"ai_consent\":false,\"room_id\":null,\"settings\":{\"ai_consent\":null,\"use_pint\":false},\"permissions\":{\"prevent_sandbox_export\":false,\"prevent_sandbox_leaving\":false},\"is_sse\":false,\"author\":{\"id\":\"user_6ngnupYZ99cwA4X3t5o1CW\",\"name\":\"Dominik Dorfmeister\",\"username\":\"TkDodo\",\"avatar_url\":\"https:\\u002F\\u002Favatars.githubusercontent.com\\u002Fu\\u002F1021430?v=4\",\"personal_workspace_id\":\"ws_XiBCv7MgHSszKyXHXG5ray\",\"subscription_plan\":null,\"subscription_since\":null},\"v2\":false,\"npm_registries\":[]};"
+      - paragraph [ref=e481]: The important part of this demo is that we never put the value that we get from React Query into local state. This makes sure that we always see the latest data, because there is no local “copy” of it.
+      - generic [ref=e482]:
+        - heading "The enabled option is very powerful" [level=3] [ref=e483]
+        - 'link "Permalink: The enabled option is very powerful" [ref=e484] [cursor=pointer]':
+          - /url: "#the-enabled-option-is-very-powerful"
+          - img [ref=e485]
+      - paragraph [ref=e487]:
+        - text: The
+        - code [ref=e488]: useQuery
+        - text: hook has many options that you can pass in to customize its behaviour, and the
+        - code [ref=e489]: enabled
+        - text: option is a very powerful one that
+        - emphasis [ref=e490]: enables
+        - text: "you to do many cool things (pun intended). Here is a short list of things that we were able to accomplish thanks to this option:"
+      - list [ref=e491]:
+        - listitem [ref=e492]:
+          - link "Dependent Queries (opens in a new window)" [ref=e493] [cursor=pointer]:
+            - /url: https://tanstack.com/query/latest/docs/react/guides/dependent-queries
+            - text: Dependent Queries
+            - generic [ref=e494]: (opens in a new window)
+          - text: Fetch data in one query and have a second query only run once we have successfully obtained data from the first query.
+        - listitem [ref=e495]:
+          - text: Turn queries on and off
+          - text: We have one query that polls data regularly thanks to
+          - code [ref=e496]: refetchInterval
+          - text: ", but we can temporarily pause it if a Modal is open to avoid updates in the back of the screen."
+        - listitem [ref=e497]:
+          - text: Wait for user input
+          - text: Have some filter criteria in the query key, but disable it for as long as the user has not applied their filters.
+        - listitem [ref=e498]:
+          - text: Disable a query after some user input
+          - text: e.g. if we then have a draft value that should take precedence over the server data. See the above example.
+      - generic [ref=e499]:
+        - heading "Don’t use the queryCache as a local state manager" [level=3] [ref=e500]
+        - 'link "Permalink: Don’t use the queryCache as a local state manager" [ref=e501] [cursor=pointer]':
+          - /url: "#dont-use-the-querycache-as-a-local-state-manager"
+          - img [ref=e502]
+      - paragraph [ref=e504]:
+        - text: If you tamper with the queryCache (
+        - code [ref=e505]: queryClient.setQueryData
+        - text: ), it should only be for optimistic updates or for writing data that you receive from the backend after a mutation. Remember that every background refetch might override that data, so
+        - link "use (opens in a new window)" [ref=e506] [cursor=pointer]:
+          - /url: https://reactjs.org/docs/hooks-state.html
+          - text: use
+          - generic [ref=e507]: (opens in a new window)
+        - link "something (opens in a new window)" [ref=e508] [cursor=pointer]:
+          - /url: https://zustand.surge.sh/
+          - text: something
+          - generic [ref=e509]: (opens in a new window)
+        - link "else (opens in a new window)" [ref=e510] [cursor=pointer]:
+          - /url: https://redux.js.org/
+          - text: else
+          - generic [ref=e511]: (opens in a new window)
+        - text: for local state.
+      - generic [ref=e512]:
+        - heading "Create custom hooks" [level=3] [ref=e513]
+        - 'link "Permalink: Create custom hooks" [ref=e514] [cursor=pointer]':
+          - /url: "#create-custom-hooks"
+          - img [ref=e515]
+      - paragraph [ref=e517]:
+        - text: Even if it’s only for wrapping one
+        - code [ref=e518]: useQuery
+        - text: "call, creating a custom hook usually pays off because:"
+      - list [ref=e519]:
+        - listitem [ref=e520]:
+          - text: You can keep the actual data fetching out of the ui, but co-located with your
+          - code [ref=e521]: useQuery
+          - text: call.
+        - listitem [ref=e522]: You can keep all usages of one query key (and potentially type definitions) in one file.
+        - listitem [ref=e523]: If you need to tweak some settings or add some data transformation, you can do that in one place.
+      - paragraph [ref=e524]:
+        - text: You have already seen an example of that in the
+        - link "todos queries above" [ref=e525] [cursor=pointer]:
+          - /url: "#treat-the-query-key-like-a-dependency-array"
+        - text: .
+      - separator [ref=e526]
+      - paragraph [ref=e527]: I hope that these practical tips will help you to get started with React Query, so go check it out :) If you have any further questions, please let me know in the comments below. ⬇️
+      - generic [ref=e528]:
+        - generic [ref=e529]:
+          - generic [ref=e530]:
+            - paragraph [ref=e531]: Like the monospace font in the code blocks?
+            - paragraph [ref=e532]:
+              - text: Check out
+              - link "monolisa.dev" [ref=e533] [cursor=pointer]:
+                - /url: https://www.monolisa.dev/?ref=dominik
+          - link "Query.gg - The official React Query course" [ref=e535] [cursor=pointer]:
+            - /url: https://query.gg/?s=dom
+            - img "Query.gg - The official React Query course" [ref=e536]
+        - generic [ref=e537]:
+          - tablist "Comment sources" [ref=e538]:
+            - tab "GitHub" [selected] [ref=e539] [cursor=pointer]
+          - tabpanel [ref=e540]:
+            - iframe [ref=e542]:
+              - generic [active] [ref=f2e1]:
+                - main [ref=f2e3]:
+                  - generic [ref=f2e4]:
+                    - generic [ref=f2e5]:
+                      - heading "147 reactions" [level=4] [ref=f2e6]:
+                        - link "147 reactions" [ref=f2e7] [cursor=pointer]:
+                          - /url: https://github.com/TkDodo/blog-comments/discussions/51
+                      - generic [ref=f2e8]:
+                        - group [ref=f2e9]:
+                          - generic "Add reactions" [ref=f2e10] [cursor=pointer]:
+                            - img [ref=f2e11]
+                        - generic [ref=f2e13]:
+                          - button "You must be signed in to add reactions." [disabled] [ref=f2e14]:
+                            - generic [ref=f2e15]: 👍
+                            - generic "63 people reacted with +1 emoji" [ref=f2e16]: "63"
+                          - button "You must be signed in to add reactions." [disabled] [ref=f2e17]:
+                            - generic [ref=f2e18]: 😄
+                            - generic "4 people reacted with Laugh emoji" [ref=f2e19]: "4"
+                          - button "You must be signed in to add reactions." [disabled] [ref=f2e20]:
+                            - generic [ref=f2e21]: 🎉
+                            - generic "16 people reacted with Hooray emoji" [ref=f2e22]: "16"
+                          - button "You must be signed in to add reactions." [disabled] [ref=f2e23]:
+                            - generic [ref=f2e24]: ❤️
+                            - generic "39 people reacted with Love emoji" [ref=f2e25]: "39"
+                          - button "You must be signed in to add reactions." [disabled] [ref=f2e26]:
+                            - generic [ref=f2e27]: 🚀
+                            - generic "25 people reacted with Rocket emoji" [ref=f2e28]: "25"
+                    - generic [ref=f2e29]:
+                      - generic [ref=f2e30]:
+                        - generic [ref=f2e31]:
+                          - heading "80 comments" [level=4] [ref=f2e32]:
+                            - link "80 comments" [ref=f2e33] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51
+                          - heading "·" [level=4] [ref=f2e34]
+                          - heading "15+ replies" [level=4] [ref=f2e35]
+                          - emphasis [ref=f2e36]:
+                            - text: – powered by
+                            - link "giscus" [ref=f2e37] [cursor=pointer]:
+                              - /url: https://giscus.app
+                        - list [ref=f2e38]:
+                          - listitem [ref=f2e39]:
+                            - button "Oldest" [ref=f2e40] [cursor=pointer]
+                          - listitem [ref=f2e41]:
+                            - button "Newest" [ref=f2e42] [cursor=pointer]
+                      - generic [ref=f2e43]:
+                        - generic [ref=f2e44]:
+                          - generic [ref=f2e45]:
+                            - button "Write" [ref=f2e46] [cursor=pointer]
+                            - button "Preview" [ref=f2e47] [cursor=pointer]
+                          - button "Enable fixed-width (monospace) font in the editor" [ref=f2e49] [cursor=pointer]:
+                            - img [ref=f2e50]
+                        - generic [ref=f2e53]:
+                          - textbox "Sign in to comment" [disabled] [ref=f2e54]
+                          - link "Styling with Markdown is supported" [ref=f2e56] [cursor=pointer]:
+                            - /url: https://guides.github.com/features/mastering-markdown/
+                            - img [ref=f2e57]
+                        - link "Sign in with GitHub" [ref=f2e61] [cursor=pointer]:
+                          - /url: /api/oauth/authorize?redirect_uri=https%3A%2F%2Ftkdodo.eu%2Fblog%2Fpractical-react-query
+                          - img [ref=f2e62]
+                          - text: Sign in with GitHub
+                      - generic [ref=f2e64]:
+                        - generic [ref=f2e66]:
+                          - generic [ref=f2e68]:
+                            - link "@tannerlinsley tannerlinsley" [ref=f2e69] [cursor=pointer]:
+                              - /url: https://github.com/tannerlinsley
+                              - img "@tannerlinsley" [ref=f2e70]
+                              - generic [ref=f2e71]: tannerlinsley
+                            - link "Nov 17, 2020" [ref=f2e72] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575367
+                              - time [ref=f2e73]: Nov 17, 2020
+                          - paragraph [ref=f2e75]: Fantastic!!!
+                          - generic [ref=f2e76]:
+                            - generic [ref=f2e77]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e78]:
+                                - img [ref=f2e79]
+                                - generic "1 upvote" [ref=f2e81]: "1"
+                              - group [ref=f2e82]:
+                                - generic "Add reactions" [ref=f2e83] [cursor=pointer]:
+                                  - img [ref=f2e84]
+                              - generic [ref=f2e86]:
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e87]:
+                                  - generic [ref=f2e88]: 🎉
+                                  - generic "12 people reacted with Hooray emoji" [ref=f2e89]: "12"
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e90]:
+                                  - generic [ref=f2e91]: ❤️
+                                  - generic "27 people reacted with Love emoji" [ref=f2e92]: "27"
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e93]:
+                                  - generic [ref=f2e94]: 🚀
+                                  - generic "7 people reacted with Rocket emoji" [ref=f2e95]: "7"
+                            - generic [ref=f2e97]: 0 replies
+                        - generic [ref=f2e99]:
+                          - generic [ref=f2e101]:
+                            - link "@johnnyreilly johnnyreilly" [ref=f2e102] [cursor=pointer]:
+                              - /url: https://github.com/johnnyreilly
+                              - img "@johnnyreilly" [ref=f2e103]
+                              - generic [ref=f2e104]: johnnyreilly
+                            - link "Nov 17, 2020" [ref=f2e105] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575368
+                              - time [ref=f2e106]: Nov 17, 2020
+                          - paragraph [ref=f2e108]: This is a tremendous write up! Thanks!
+                          - generic [ref=f2e109]:
+                            - generic [ref=f2e110]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e111]:
+                                - img [ref=f2e112]
+                                - generic "1 upvote" [ref=f2e114]: "1"
+                              - group [ref=f2e115]:
+                                - generic "Add reactions" [ref=f2e116] [cursor=pointer]:
+                                  - img [ref=f2e117]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e120]:
+                                - generic [ref=f2e121]: ❤️
+                                - generic "6 people reacted with Love emoji" [ref=f2e122]: "6"
+                            - generic [ref=f2e124]: 0 replies
+                        - generic [ref=f2e126]:
+                          - generic [ref=f2e128]:
+                            - link "@johnnyghost johnnyghost" [ref=f2e129] [cursor=pointer]:
+                              - /url: https://github.com/johnnyghost
+                              - img "@johnnyghost" [ref=f2e130]
+                              - generic [ref=f2e131]: johnnyghost
+                            - link "Nov 17, 2020" [ref=f2e132] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575369
+                              - time [ref=f2e133]: Nov 17, 2020
+                          - paragraph [ref=f2e135]:
+                            - text: Good stuff!
+                            - text: Thanks 💪
+                          - generic [ref=f2e136]:
+                            - generic [ref=f2e137]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e138]:
+                                - img [ref=f2e139]
+                                - generic "1 upvote" [ref=f2e141]: "1"
+                              - group [ref=f2e142]:
+                                - generic "Add reactions" [ref=f2e143] [cursor=pointer]:
+                                  - img [ref=f2e144]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e147]:
+                                - generic [ref=f2e148]: ❤️
+                                - generic "3 people reacted with Love emoji" [ref=f2e149]: "3"
+                            - generic [ref=f2e151]: 0 replies
+                        - generic [ref=f2e153]:
+                          - generic [ref=f2e155]:
+                            - link "@hrafnkellpalsson hrafnkellpalsson" [ref=f2e156] [cursor=pointer]:
+                              - /url: https://github.com/hrafnkellpalsson
+                              - img "@hrafnkellpalsson" [ref=f2e157]
+                              - generic [ref=f2e158]: hrafnkellpalsson
+                            - link "Nov 17, 2020" [ref=f2e159] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575370
+                              - time [ref=f2e160]: Nov 17, 2020
+                          - paragraph [ref=f2e162]: Great post! Hadn't considered using the enabled option for anything else then dependent queries, very neat!
+                          - generic [ref=f2e163]:
+                            - generic [ref=f2e164]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e165]:
+                                - img [ref=f2e166]
+                                - generic "1 upvote" [ref=f2e168]: "1"
+                              - group [ref=f2e169]:
+                                - generic "Add reactions" [ref=f2e170] [cursor=pointer]:
+                                  - img [ref=f2e171]
+                              - generic [ref=f2e173]:
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e174]:
+                                  - generic [ref=f2e175]: ❤️
+                                  - generic "3 people reacted with Love emoji" [ref=f2e176]: "3"
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e177]:
+                                  - generic [ref=f2e178]: 🚀
+                                  - generic "1 person reacted with Rocket emoji" [ref=f2e179]: "1"
+                            - generic [ref=f2e181]: 0 replies
+                        - generic [ref=f2e183]:
+                          - generic [ref=f2e185]:
+                            - link "@d-ivashchuk d-ivashchuk" [ref=f2e186] [cursor=pointer]:
+                              - /url: https://github.com/d-ivashchuk
+                              - img "@d-ivashchuk" [ref=f2e187]
+                              - generic [ref=f2e188]: d-ivashchuk
+                            - link "Nov 17, 2020" [ref=f2e189] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575371
+                              - time [ref=f2e190]: Nov 17, 2020
+                          - paragraph [ref=f2e192]: Great write up 🔥
+                          - generic [ref=f2e193]:
+                            - generic [ref=f2e194]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e195]:
+                                - img [ref=f2e196]
+                                - generic "1 upvote" [ref=f2e198]: "1"
+                              - group [ref=f2e199]:
+                                - generic "Add reactions" [ref=f2e200] [cursor=pointer]:
+                                  - img [ref=f2e201]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e204]:
+                                - generic [ref=f2e205]: ❤️
+                                - generic "3 people reacted with Love emoji" [ref=f2e206]: "3"
+                            - generic [ref=f2e208]: 0 replies
+                        - generic [ref=f2e210]:
+                          - generic [ref=f2e212]:
+                            - link "@frycz frycz" [ref=f2e213] [cursor=pointer]:
+                              - /url: https://github.com/frycz
+                              - img "@frycz" [ref=f2e214]
+                              - generic [ref=f2e215]: frycz
+                            - link "Nov 18, 2020" [ref=f2e216] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575372
+                              - time [ref=f2e217]: Nov 18, 2020
+                          - paragraph [ref=f2e219]: Thanks TkDodo!
+                          - generic [ref=f2e220]:
+                            - generic [ref=f2e221]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e222]:
+                                - img [ref=f2e223]
+                                - generic "1 upvote" [ref=f2e225]: "1"
+                              - group [ref=f2e226]:
+                                - generic "Add reactions" [ref=f2e227] [cursor=pointer]:
+                                  - img [ref=f2e228]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e231]:
+                                - generic [ref=f2e232]: ❤️
+                                - generic "2 people reacted with Love emoji" [ref=f2e233]: "2"
+                            - generic [ref=f2e235]: 0 replies
+                        - generic [ref=f2e237]:
+                          - generic [ref=f2e239]:
+                            - link "@GrooyaO GrooyaO" [ref=f2e240] [cursor=pointer]:
+                              - /url: https://github.com/GrooyaO
+                              - img "@GrooyaO" [ref=f2e241]
+                              - generic [ref=f2e242]: GrooyaO
+                            - link "Dec 20, 2020" [ref=f2e243] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575373
+                              - time [ref=f2e244]: Dec 20, 2020
+                          - paragraph [ref=f2e246]: Thank you. Super clear! 💡
+                          - generic [ref=f2e247]:
+                            - generic [ref=f2e248]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e249]:
+                                - img [ref=f2e250]
+                                - generic "1 upvote" [ref=f2e252]: "1"
+                              - group [ref=f2e253]:
+                                - generic "Add reactions" [ref=f2e254] [cursor=pointer]:
+                                  - img [ref=f2e255]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e258]:
+                                - generic [ref=f2e259]: ❤️
+                                - generic "1 person reacted with Love emoji" [ref=f2e260]: "1"
+                            - generic [ref=f2e262]: 1 reply
+                          - generic [ref=f2e266]:
+                            - link "@Dev7Eng4" [ref=f2e268] [cursor=pointer]:
+                              - /url: https://github.com/Dev7Eng4
+                              - img "@Dev7Eng4" [ref=f2e269]
+                            - generic [ref=f2e270]:
+                              - generic [ref=f2e272]:
+                                - link "Dev7Eng4" [ref=f2e273] [cursor=pointer]:
+                                  - /url: https://github.com/Dev7Eng4
+                                  - generic [ref=f2e274]: Dev7Eng4
+                                - link "Sep 10, 2025" [ref=f2e275] [cursor=pointer]:
+                                  - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-14359039
+                                  - time [ref=f2e276]: Sep 10, 2025
+                              - paragraph [ref=f2e278]: oh wao so helpful
+                              - generic [ref=f2e280]:
+                                - group [ref=f2e281]:
+                                  - generic "Add reactions" [ref=f2e282] [cursor=pointer]:
+                                    - img [ref=f2e283]
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e286]:
+                                  - generic [ref=f2e287]: 🎉
+                                  - generic "2 people reacted with Hooray emoji" [ref=f2e288]: "2"
+                        - generic [ref=f2e290]:
+                          - generic [ref=f2e292]:
+                            - link "@AjaxSolutions AjaxSolutions" [ref=f2e293] [cursor=pointer]:
+                              - /url: https://github.com/AjaxSolutions
+                              - img "@AjaxSolutions" [ref=f2e294]
+                              - generic [ref=f2e295]: AjaxSolutions
+                            - link "Jan 6, 2021" [ref=f2e296] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575374
+                              - time [ref=f2e297]: Jan 6, 2021
+                          - paragraph [ref=f2e299]: Good writeup. I wasn't clear before on what is the difference between isFetching and isLoading.
+                          - generic [ref=f2e300]:
+                            - generic [ref=f2e301]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e302]:
+                                - img [ref=f2e303]
+                                - generic "1 upvote" [ref=f2e305]: "1"
+                              - group [ref=f2e306]:
+                                - generic "Add reactions" [ref=f2e307] [cursor=pointer]:
+                                  - img [ref=f2e308]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e311]:
+                                - generic [ref=f2e312]: ❤️
+                                - generic "2 people reacted with Love emoji" [ref=f2e313]: "2"
+                            - generic [ref=f2e315]: 0 replies
+                        - generic [ref=f2e317]:
+                          - generic [ref=f2e319]:
+                            - link "@DevAbas DevAbas" [ref=f2e320] [cursor=pointer]:
+                              - /url: https://github.com/DevAbas
+                              - img "@DevAbas" [ref=f2e321]
+                              - generic [ref=f2e322]: DevAbas
+                            - link "Mar 28, 2021" [ref=f2e323] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575375
+                              - time [ref=f2e324]: Mar 28, 2021
+                          - paragraph [ref=f2e326]: Thanks! Super ❤️👌
+                          - generic [ref=f2e327]:
+                            - generic [ref=f2e328]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e329]:
+                                - img [ref=f2e330]
+                                - generic "1 upvote" [ref=f2e332]: "1"
+                              - group [ref=f2e333]:
+                                - generic "Add reactions" [ref=f2e334] [cursor=pointer]:
+                                  - img [ref=f2e335]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e338]:
+                                - generic [ref=f2e339]: ❤️
+                                - generic "2 people reacted with Love emoji" [ref=f2e340]: "2"
+                            - generic [ref=f2e342]: 0 replies
+                        - generic [ref=f2e344]:
+                          - generic [ref=f2e346]:
+                            - link "@willnguyen1312 willnguyen1312" [ref=f2e347] [cursor=pointer]:
+                              - /url: https://github.com/willnguyen1312
+                              - img "@willnguyen1312" [ref=f2e348]
+                              - generic [ref=f2e349]: willnguyen1312
+                            - link "May 19, 2021" [ref=f2e350] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575376
+                              - time [ref=f2e351]: May 19, 2021
+                          - paragraph [ref=f2e353]: Love the way you explain things, couldn't be better ❤️
+                          - generic [ref=f2e354]:
+                            - generic [ref=f2e355]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e356]:
+                                - img [ref=f2e357]
+                                - generic "1 upvote" [ref=f2e359]: "1"
+                              - group [ref=f2e360]:
+                                - generic "Add reactions" [ref=f2e361] [cursor=pointer]:
+                                  - img [ref=f2e362]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e365]:
+                                - generic [ref=f2e366]: ❤️
+                                - generic "1 person reacted with Love emoji" [ref=f2e367]: "1"
+                            - generic [ref=f2e369]: 0 replies
+                        - generic [ref=f2e371]:
+                          - generic [ref=f2e373]:
+                            - link "@anoopvasudevan anoopvasudevan" [ref=f2e374] [cursor=pointer]:
+                              - /url: https://github.com/anoopvasudevan
+                              - img "@anoopvasudevan" [ref=f2e375]
+                              - generic [ref=f2e376]: anoopvasudevan
+                            - link "May 21, 2021" [ref=f2e377] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575377
+                              - time [ref=f2e378]: May 21, 2021
+                          - paragraph [ref=f2e380]: This! Great article. Clarified a lot of confusions.
+                          - generic [ref=f2e381]:
+                            - generic [ref=f2e382]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e383]:
+                                - img [ref=f2e384]
+                                - generic "1 upvote" [ref=f2e386]: "1"
+                              - group [ref=f2e387]:
+                                - generic "Add reactions" [ref=f2e388] [cursor=pointer]:
+                                  - img [ref=f2e389]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e392]:
+                                - generic [ref=f2e393]: ❤️
+                                - generic "1 person reacted with Love emoji" [ref=f2e394]: "1"
+                            - generic [ref=f2e396]: 0 replies
+                        - generic [ref=f2e398]:
+                          - generic [ref=f2e400]:
+                            - link "@ArianHamdi ArianHamdi" [ref=f2e401] [cursor=pointer]:
+                              - /url: https://github.com/ArianHamdi
+                              - img "@ArianHamdi" [ref=f2e402]
+                              - generic [ref=f2e403]: ArianHamdi
+                            - link "Jun 19, 2021" [ref=f2e404] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575378
+                              - time [ref=f2e405]: Jun 19, 2021
+                          - paragraph [ref=f2e407]:
+                            - text: Thanks tkdodo for this amazing article.
+                            - text: for a server state that can be editable by user, can I setState in onSuccess ?
+                            - text: in this way we are not forced to wait for data and pass it as initial state to the component.
+                          - generic [ref=f2e408]:
+                            - generic [ref=f2e409]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e410]:
+                                - img [ref=f2e411]
+                                - generic "1 upvote" [ref=f2e413]: "1"
+                              - group [ref=f2e414]:
+                                - generic "Add reactions" [ref=f2e415] [cursor=pointer]:
+                                  - img [ref=f2e416]
+                            - generic [ref=f2e419]: 0 replies
+                        - generic [ref=f2e421]:
+                          - generic [ref=f2e423]:
+                            - link "@TkDodo TkDodo" [ref=f2e424] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo
+                              - img "@TkDodo" [ref=f2e425]
+                              - generic [ref=f2e426]: TkDodo
+                            - link "Jun 20, 2021" [ref=f2e427] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575379
+                              - time [ref=f2e428]: Jun 20, 2021
+                            - generic [ref=f2e430]: Owner
+                          - generic [ref=f2e431]:
+                            - blockquote [ref=f2e432]:
+                              - paragraph [ref=f2e433]: for a server state that can be editable by user, can I setState in onSuccess ?
+                            - paragraph [ref=f2e434]:
+                              - text: you can, but be aware that
+                              - code [ref=f2e435]: onSuccess
+                              - text: is called for every successful background refetch as well, thus calling
+                              - code [ref=f2e436]: setState
+                              - text: ". I would still stick to a clear separation as outlined here:"
+                              - link "https://tkdodo.eu/blog/practical-react-query#keep-server-and-client-state-separate" [ref=f2e437] [cursor=pointer]:
+                                - /url: https://tkdodo.eu/blog/practical-react-query#keep-server-and-client-state-separate
+                          - generic [ref=f2e438]:
+                            - generic [ref=f2e439]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e440]:
+                                - img [ref=f2e441]
+                                - generic "1 upvote" [ref=f2e443]: "1"
+                              - group [ref=f2e444]:
+                                - generic "Add reactions" [ref=f2e445] [cursor=pointer]:
+                                  - img [ref=f2e446]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e449]:
+                                - generic [ref=f2e450]: 👍
+                                - generic "1 person reacted with +1 emoji" [ref=f2e451]: "1"
+                            - generic [ref=f2e453]: 0 replies
+                        - generic [ref=f2e455]:
+                          - generic [ref=f2e457]:
+                            - link "@qkangusc qkangusc" [ref=f2e458] [cursor=pointer]:
+                              - /url: https://github.com/qkangusc
+                              - img "@qkangusc" [ref=f2e459]
+                              - generic [ref=f2e460]: qkangusc
+                            - link "Jul 4, 2021" [ref=f2e461] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575380
+                              - time [ref=f2e462]: Jul 4, 2021
+                          - generic [ref=f2e463]:
+                            - paragraph [ref=f2e464]: This is exactly what I am looking for. Thank you tkdodo!
+                            - paragraph [ref=f2e465]:
+                              - text: I wrapped useQuery inside custom hook and use it in many places in my code. One thing I noticed is that I log the success event in
+                              - code [ref=f2e466]: onSucess
+                              - text: handler, so every time the fetch succeed, all the observers call onSuccess and the success event is log multiple times. Is there a way to only send the log once?
+                          - generic [ref=f2e467]:
+                            - generic [ref=f2e468]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e469]:
+                                - img [ref=f2e470]
+                                - generic "1 upvote" [ref=f2e472]: "1"
+                              - group [ref=f2e473]:
+                                - generic "Add reactions" [ref=f2e474] [cursor=pointer]:
+                                  - img [ref=f2e475]
+                            - generic [ref=f2e478]: 0 replies
+                        - generic [ref=f2e480]:
+                          - generic [ref=f2e482]:
+                            - link "@TkDodo TkDodo" [ref=f2e483] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo
+                              - img "@TkDodo" [ref=f2e484]
+                              - generic [ref=f2e485]: TkDodo
+                            - link "Jul 4, 2021" [ref=f2e486] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-2575381
+                              - time [ref=f2e487]: Jul 4, 2021
+                            - generic [ref=f2e489]: Owner
+                          - generic [ref=f2e490]:
+                            - blockquote [ref=f2e491]:
+                              - paragraph [ref=f2e492]: Is there a way to only send the log once?
+                            - paragraph [ref=f2e493]:
+                              - text: "we have on open PR to add a global onSuccess handler to the queryCache. Feel free to try it out and provide feedback:"
+                              - link "TanStack/query#2404" [ref=f2e494] [cursor=pointer]:
+                                - /url: https://github.com/TanStack/query/pull/2404
+                          - generic [ref=f2e495]:
+                            - generic [ref=f2e496]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e497]:
+                                - img [ref=f2e498]
+                                - generic "1 upvote" [ref=f2e500]: "1"
+                              - group [ref=f2e501]:
+                                - generic "Add reactions" [ref=f2e502] [cursor=pointer]:
+                                  - img [ref=f2e503]
+                            - generic [ref=f2e506]: 0 replies
+                        - button "50 hidden items Load more…" [ref=f2e508] [cursor=pointer]:
+                          - generic [ref=f2e509]: 50 hidden items
+                          - generic [ref=f2e510]: Load more…
+                        - generic [ref=f2e512]:
+                          - generic [ref=f2e514]:
+                            - link "@andygr1n1 andygr1n1" [ref=f2e515] [cursor=pointer]:
+                              - /url: https://github.com/andygr1n1
+                              - img "@andygr1n1" [ref=f2e516]
+                              - generic [ref=f2e517]: andygr1n1
+                            - link "Jan 20, 2024" [ref=f2e518] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-8186678
+                              - time [ref=f2e519]: Jan 20, 2024
+                          - paragraph [ref=f2e521]: Great article, fantasic!
+                          - generic [ref=f2e522]:
+                            - generic [ref=f2e523]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e524]:
+                                - img [ref=f2e525]
+                                - generic "1 upvote" [ref=f2e527]: "1"
+                              - group [ref=f2e528]:
+                                - generic "Add reactions" [ref=f2e529] [cursor=pointer]:
+                                  - img [ref=f2e530]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e533]:
+                                - generic [ref=f2e534]: ❤️
+                                - generic "1 person reacted with Love emoji" [ref=f2e535]: "1"
+                            - generic [ref=f2e537]: 0 replies
+                        - generic [ref=f2e539]:
+                          - generic [ref=f2e541]:
+                            - link "@m1abdullahh m1abdullahh" [ref=f2e542] [cursor=pointer]:
+                              - /url: https://github.com/m1abdullahh
+                              - img "@m1abdullahh" [ref=f2e543]
+                              - generic [ref=f2e544]: m1abdullahh
+                            - link "Jun 5, 2024" [ref=f2e545] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-9678296
+                              - time [ref=f2e546]: Jun 5, 2024
+                          - paragraph [ref=f2e548]: Awesome !!
+                          - generic [ref=f2e549]:
+                            - generic [ref=f2e550]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e551]:
+                                - img [ref=f2e552]
+                                - generic "1 upvote" [ref=f2e554]: "1"
+                              - group [ref=f2e555]:
+                                - generic "Add reactions" [ref=f2e556] [cursor=pointer]:
+                                  - img [ref=f2e557]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e560]:
+                                - generic [ref=f2e561]: 🎉
+                                - generic "1 person reacted with Hooray emoji" [ref=f2e562]: "1"
+                            - generic [ref=f2e564]: 0 replies
+                        - generic [ref=f2e566]:
+                          - generic [ref=f2e568]:
+                            - link "@HoangDungNg HoangDungNg" [ref=f2e569] [cursor=pointer]:
+                              - /url: https://github.com/HoangDungNg
+                              - img "@HoangDungNg" [ref=f2e570]
+                              - generic [ref=f2e571]: HoangDungNg
+                            - link "Jul 5, 2024" [ref=f2e572] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-9967899
+                              - time [ref=f2e573]: Jul 5, 2024
+                          - paragraph [ref=f2e575]: "Thanks to you I'm more confident about TanStack query whenever I use it. But I have a small question. What is the difference betweet using useMemo and not using useMemo for parameters passed to the queryKey array? Assume that I have a constant \"params\", this constant is a memo constant that will change according to the URL query params. I passed this constant to queryArray like following queryArray: ['myGETApi', params]. I know that both ways the query will still work without any side effect but I just wonder the difference between those."
+                          - generic [ref=f2e576]:
+                            - generic [ref=f2e577]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e578]:
+                                - img [ref=f2e579]
+                                - generic "1 upvote" [ref=f2e581]: "1"
+                              - group [ref=f2e582]:
+                                - generic "Add reactions" [ref=f2e583] [cursor=pointer]:
+                                  - img [ref=f2e584]
+                            - generic [ref=f2e587]: 1 reply
+                          - generic [ref=f2e591]:
+                            - link "@TkDodo" [ref=f2e593] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo
+                              - img "@TkDodo" [ref=f2e594]
+                            - generic [ref=f2e595]:
+                              - generic [ref=f2e597]:
+                                - link "TkDodo" [ref=f2e598] [cursor=pointer]:
+                                  - /url: https://github.com/TkDodo
+                                  - generic [ref=f2e599]: TkDodo
+                                - link "Jul 11, 2024" [ref=f2e600] [cursor=pointer]:
+                                  - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-10019180
+                                  - time [ref=f2e601]: Jul 11, 2024
+                                - generic [ref=f2e603]: Owner
+                              - generic [ref=f2e604]:
+                                - blockquote [ref=f2e605]:
+                                  - paragraph [ref=f2e606]: What is the difference between using useMemo and not using useMemo for parameters passed to the queryKey array?
+                                - paragraph [ref=f2e607]: You don't need to memoize the key.
+                              - group [ref=f2e610]:
+                                - generic "Add reactions" [ref=f2e611] [cursor=pointer]:
+                                  - img [ref=f2e612]
+                        - generic [ref=f2e615]:
+                          - generic [ref=f2e617]:
+                            - link "@ghost ghost" [ref=f2e618] [cursor=pointer]:
+                              - /url: https://github.com/ghost
+                              - img "@ghost" [ref=f2e619]
+                              - generic [ref=f2e620]: ghost
+                            - link "Jul 16, 2024" [ref=f2e621] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-10057424
+                              - time [ref=f2e622]: Jul 16, 2024
+                          - paragraph [ref=f2e624]: Thanks for the writeup. I however had a question about the usage of querycache as local state. I'm using use query to load the data into querycache and for every update in the data (due to user interaction) I'm using setquerydata inside onMutate for optimistic updates. In another section of my app where the updates are more frequent and in the interest of reducing server calls, I'm loading the cache into local state (with useffect), and then batching the changes made to local state and sending them to server. In this case, when doing the mutation, I'm also using setquerydata to make the exact changes to cache. Can you let me know if these approaches are recommended or if theres a better way to solve this problem? Thanks!
+                          - generic [ref=f2e625]:
+                            - generic [ref=f2e626]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e627]:
+                                - img [ref=f2e628]
+                                - generic "0 upvotes" [ref=f2e630]: "0"
+                              - group [ref=f2e631]:
+                                - generic "Add reactions" [ref=f2e632] [cursor=pointer]:
+                                  - img [ref=f2e633]
+                            - generic [ref=f2e636]: 2 replies
+                          - generic [ref=f2e637]:
+                            - generic [ref=f2e640]:
+                              - link "@TkDodo" [ref=f2e642] [cursor=pointer]:
+                                - /url: https://github.com/TkDodo
+                                - img "@TkDodo" [ref=f2e643]
+                              - generic [ref=f2e644]:
+                                - generic [ref=f2e646]:
+                                  - link "TkDodo" [ref=f2e647] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo
+                                    - generic [ref=f2e648]: TkDodo
+                                  - link "Jul 16, 2024" [ref=f2e649] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-10058636
+                                    - time [ref=f2e650]: Jul 16, 2024
+                                  - generic [ref=f2e652]: Owner
+                                - generic [ref=f2e653]:
+                                  - blockquote [ref=f2e654]:
+                                    - paragraph [ref=f2e655]: I'm loading the cache into local state (with useffect)
+                                  - paragraph [ref=f2e656]:
+                                    - text: "This is usually an anti-pattern. Have a read here:"
+                                    - link "https://tkdodo.eu/blog/react-query-and-forms" [ref=f2e657] [cursor=pointer]:
+                                      - /url: https://tkdodo.eu/blog/react-query-and-forms
+                                - group [ref=f2e660]:
+                                  - generic "Add reactions" [ref=f2e661] [cursor=pointer]:
+                                    - img [ref=f2e662]
+                            - generic [ref=f2e666]:
+                              - link "@ghost" [ref=f2e668] [cursor=pointer]:
+                                - /url: https://github.com/ghost
+                                - img "@ghost" [ref=f2e669]
+                              - generic [ref=f2e670]:
+                                - generic [ref=f2e672]:
+                                  - link "ghost" [ref=f2e673] [cursor=pointer]:
+                                    - /url: https://github.com/ghost
+                                    - generic [ref=f2e674]: ghost
+                                  - link "Jul 16, 2024" [ref=f2e675] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-10059823
+                                    - time [ref=f2e676]: Jul 16, 2024
+                                - paragraph [ref=f2e678]: Thanks, helpful blog post as always. But the topic seems to be tightly coupled with react hook form. The app I'm working on is based on canvas where the states of shapes like rectangle, ellipses etc are in arrays and I make the changes like create, update or delete immutably. I was wondering how 'derived state's could be used in this scenario. I don't see how I can use client state for shape that are changed and server state for ones that aren't, without copying the entire array.
+                                - group [ref=f2e681]:
+                                  - generic "Add reactions" [ref=f2e682] [cursor=pointer]:
+                                    - img [ref=f2e683]
+                        - generic [ref=f2e686]:
+                          - generic [ref=f2e688]:
+                            - link "@vin18 vin18" [ref=f2e689] [cursor=pointer]:
+                              - /url: https://github.com/vin18
+                              - img "@vin18" [ref=f2e690]
+                              - generic [ref=f2e691]: vin18
+                            - link "Aug 12, 2024" [ref=f2e692] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-10314978
+                              - time [ref=f2e693]: Aug 12, 2024
+                          - paragraph [ref=f2e695]: Great article! Thanks!
+                          - generic [ref=f2e696]:
+                            - generic [ref=f2e697]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e698]:
+                                - img [ref=f2e699]
+                                - generic "1 upvote" [ref=f2e701]: "1"
+                              - group [ref=f2e702]:
+                                - generic "Add reactions" [ref=f2e703] [cursor=pointer]:
+                                  - img [ref=f2e704]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e707]:
+                                - generic [ref=f2e708]: ❤️
+                                - generic "1 person reacted with Love emoji" [ref=f2e709]: "1"
+                            - generic [ref=f2e711]: 0 replies
+                        - generic [ref=f2e713]:
+                          - generic [ref=f2e715]:
+                            - link "@dr-executioner dr-executioner" [ref=f2e716] [cursor=pointer]:
+                              - /url: https://github.com/dr-executioner
+                              - img "@dr-executioner" [ref=f2e717]
+                              - generic [ref=f2e718]: dr-executioner
+                            - link "Aug 31, 2024" [ref=f2e719] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-10503355
+                              - time [ref=f2e720]: Aug 31, 2024
+                          - paragraph [ref=f2e722]: I might be a little late to the party but thank you so much for your work. This is just awesome. keep it up
+                          - generic [ref=f2e723]:
+                            - generic [ref=f2e724]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e725]:
+                                - img [ref=f2e726]
+                                - generic "1 upvote" [ref=f2e728]: "1"
+                              - group [ref=f2e729]:
+                                - generic "Add reactions" [ref=f2e730] [cursor=pointer]:
+                                  - img [ref=f2e731]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e734]:
+                                - generic [ref=f2e735]: ❤️
+                                - generic "1 person reacted with Love emoji" [ref=f2e736]: "1"
+                            - generic [ref=f2e738]: 1 reply
+                          - generic [ref=f2e742]:
+                            - link "@TkDodo" [ref=f2e744] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo
+                              - img "@TkDodo" [ref=f2e745]
+                            - generic [ref=f2e746]:
+                              - generic [ref=f2e748]:
+                                - link "TkDodo" [ref=f2e749] [cursor=pointer]:
+                                  - /url: https://github.com/TkDodo
+                                  - generic [ref=f2e750]: TkDodo
+                                - link "Aug 31, 2024" [ref=f2e751] [cursor=pointer]:
+                                  - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-10503687
+                                  - time [ref=f2e752]: Aug 31, 2024
+                                - generic [ref=f2e754]: Owner
+                              - paragraph [ref=f2e756]: Never to late to hear that - thank you 🙏
+                              - group [ref=f2e759]:
+                                - generic "Add reactions" [ref=f2e760] [cursor=pointer]:
+                                  - img [ref=f2e761]
+                        - generic [ref=f2e764]:
+                          - generic [ref=f2e766]:
+                            - link "@GregChyla GregChyla" [ref=f2e767] [cursor=pointer]:
+                              - /url: https://github.com/GregChyla
+                              - img "@GregChyla" [ref=f2e768]
+                              - generic [ref=f2e769]: GregChyla
+                            - link "Jan 7, 2025" [ref=f2e770] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-11759677
+                              - time [ref=f2e771]: Jan 7, 2025
+                          - paragraph [ref=f2e773]:
+                            - text: Hi
+                            - link "@TkDodo" [ref=f2e774] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo
+                            - text: ", spent an hour translating your article to Polish language. Tried to issue a PR, but can't do that - permission denied error. How can I contribute?"
+                          - generic [ref=f2e775]:
+                            - generic [ref=f2e776]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e777]:
+                                - img [ref=f2e778]
+                                - generic "1 upvote" [ref=f2e780]: "1"
+                              - group [ref=f2e781]:
+                                - generic "Add reactions" [ref=f2e782] [cursor=pointer]:
+                                  - img [ref=f2e783]
+                            - generic [ref=f2e786]: 2 replies
+                          - generic [ref=f2e787]:
+                            - generic [ref=f2e790]:
+                              - link "@TkDodo" [ref=f2e792] [cursor=pointer]:
+                                - /url: https://github.com/TkDodo
+                                - img "@TkDodo" [ref=f2e793]
+                              - generic [ref=f2e794]:
+                                - generic [ref=f2e796]:
+                                  - link "TkDodo" [ref=f2e797] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo
+                                    - generic [ref=f2e798]: TkDodo
+                                  - link "Jan 7, 2025" [ref=f2e799] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-11759690
+                                    - time [ref=f2e800]: Jan 7, 2025
+                                  - generic [ref=f2e802]: Owner
+                                - generic [ref=f2e803]:
+                                  - paragraph [ref=f2e804]: "thanks for that 🙏 . You need to fork the repo, and then initiate a PR to my repo:"
+                                  - paragraph [ref=f2e805]:
+                                    - link "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo" [ref=f2e806] [cursor=pointer]:
+                                      - /url: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo
+                                - generic [ref=f2e808]:
+                                  - group [ref=f2e809]:
+                                    - generic "Add reactions" [ref=f2e810] [cursor=pointer]:
+                                      - img [ref=f2e811]
+                                  - button "You must be signed in to add reactions." [disabled] [ref=f2e814]:
+                                    - generic [ref=f2e815]: 👍
+                                    - generic "1 person reacted with +1 emoji" [ref=f2e816]: "1"
+                            - generic [ref=f2e819]:
+                              - link "@GregChyla" [ref=f2e821] [cursor=pointer]:
+                                - /url: https://github.com/GregChyla
+                                - img "@GregChyla" [ref=f2e822]
+                              - generic [ref=f2e823]:
+                                - generic [ref=f2e825]:
+                                  - link "GregChyla" [ref=f2e826] [cursor=pointer]:
+                                    - /url: https://github.com/GregChyla
+                                    - generic [ref=f2e827]: GregChyla
+                                  - link "Jan 7, 2025" [ref=f2e828] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-11762647
+                                    - time [ref=f2e829]: Jan 7, 2025
+                                - paragraph [ref=f2e831]: done :)
+                                - group [ref=f2e834]:
+                                  - generic "Add reactions" [ref=f2e835] [cursor=pointer]:
+                                    - img [ref=f2e836]
+                        - generic [ref=f2e839]:
+                          - generic [ref=f2e841]:
+                            - link "@Buenaventura-Celine Buenaventura-Celine" [ref=f2e842] [cursor=pointer]:
+                              - /url: https://github.com/Buenaventura-Celine
+                              - img "@Buenaventura-Celine" [ref=f2e843]
+                              - generic [ref=f2e844]: Buenaventura-Celine
+                            - link "Jan 22, 2025" [ref=f2e845] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-11916015
+                              - time [ref=f2e846]: Jan 22, 2025
+                          - generic [ref=f2e847]:
+                            - paragraph [ref=f2e848]:
+                              - text: Hello this is a great article :)!
+                              - text: "I have a question, what are your thoughts about this approach: I am leveraging the fetchQuery instead of enabled property. The use case is that, I want the code in the component to be cleaner, thus I want to called only one hook. Here is an example"
+                            - paragraph [ref=f2e849]: Instead of doing this in component level
+                            - generic [ref=f2e850]:
+                              - code [ref=f2e852]: "// Get the user const { data: user } = useQuery({ queryKey: ['user', email], queryFn: getUserByEmail, }) const userId = user?.id // Then get the user's projects const { status, fetchStatus, data: projects, } = useQuery({ queryKey: ['projects', userId], queryFn: getProjectsByUser, // The query will not execute until the userId exists enabled: !!userId, })"
+                              - button "Copy" [ref=f2e854] [cursor=pointer]:
+                                - img [ref=f2e855]
+                            - paragraph [ref=f2e858]: I do it like this
+                            - paragraph [ref=f2e859]: In application layer I have this
+                            - generic [ref=f2e860]:
+                              - code [ref=f2e862]: "export async function readUserEmail(): Promise<any> { const queryClient = getQueryClient(); const result = await queryClient.fetchQuery({ queryKey: ['user', email], queryFn: () => getUserByEmail(), staleTime: FIVE_MINUTES, }); return result.data.tags; }"
+                              - button "Copy" [ref=f2e864] [cursor=pointer]:
+                                - img [ref=f2e865]
+                            - generic [ref=f2e868]:
+                              - code [ref=f2e870]: "export function useGetProjectsByUser() { return useQuery({ queryKey: [ENFORCED_TAG_KEY], queryFn: () => { const usersEmail = await readUserEmail(); const projects = getProjectsByUser(usersEmail) return projects; }, }); }"
+                              - button "Copy" [ref=f2e872] [cursor=pointer]:
+                                - img [ref=f2e873]
+                            - paragraph [ref=f2e876]: and in the component level I can now use only the useGetProjectsByUser
+                            - paragraph [ref=f2e877]: What are the repercussions of this approach, I am new to react-query and doesn't know much yet. Thanks for your help
+                          - generic [ref=f2e878]:
+                            - generic [ref=f2e879]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e880]:
+                                - img [ref=f2e881]
+                                - generic "1 upvote" [ref=f2e883]: "1"
+                              - group [ref=f2e884]:
+                                - generic "Add reactions" [ref=f2e885] [cursor=pointer]:
+                                  - img [ref=f2e886]
+                            - generic [ref=f2e889]: 2 replies
+                          - generic [ref=f2e890]:
+                            - generic [ref=f2e893]:
+                              - link "@TkDodo" [ref=f2e895] [cursor=pointer]:
+                                - /url: https://github.com/TkDodo
+                                - img "@TkDodo" [ref=f2e896]
+                              - generic [ref=f2e897]:
+                                - generic [ref=f2e899]:
+                                  - link "TkDodo" [ref=f2e900] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo
+                                    - generic [ref=f2e901]: TkDodo
+                                  - link "Jan 22, 2025" [ref=f2e902] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-11916280
+                                    - time [ref=f2e903]: Jan 22, 2025
+                                  - generic [ref=f2e905]: Owner
+                                - paragraph [ref=f2e907]:
+                                  - text: The only drawback here is that the
+                                  - code [ref=f2e908]: "['user', email]"
+                                  - text: query is not seen as active because it doesn't have an observer (
+                                  - code [ref=f2e909]: useQuery
+                                  - text: ), so it's eligible for garbage collection.
+                                - group [ref=f2e912]:
+                                  - generic "Add reactions" [ref=f2e913] [cursor=pointer]:
+                                    - img [ref=f2e914]
+                            - generic [ref=f2e918]:
+                              - link "@Buenaventura-Celine" [ref=f2e920] [cursor=pointer]:
+                                - /url: https://github.com/Buenaventura-Celine
+                                - img "@Buenaventura-Celine" [ref=f2e921]
+                              - generic [ref=f2e922]:
+                                - generic [ref=f2e924]:
+                                  - link "Buenaventura-Celine" [ref=f2e925] [cursor=pointer]:
+                                    - /url: https://github.com/Buenaventura-Celine
+                                    - generic [ref=f2e926]: Buenaventura-Celine
+                                  - link "Jan 22, 2025" [ref=f2e927] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-11917115
+                                    - time [ref=f2e928]: Jan 22, 2025
+                                - paragraph [ref=f2e930]: Thanks for the quick response! I'll take a closer look at the concept of garbage collection in React Query. Do you happen to have an article or resource that explains it further?
+                                - group [ref=f2e933]:
+                                  - generic "Add reactions" [ref=f2e934] [cursor=pointer]:
+                                    - img [ref=f2e935]
+                        - generic [ref=f2e938]:
+                          - generic [ref=f2e940]:
+                            - link "@Myo-Htet-San-Brainy Myo-Htet-San-Brainy" [ref=f2e941] [cursor=pointer]:
+                              - /url: https://github.com/Myo-Htet-San-Brainy
+                              - img "@Myo-Htet-San-Brainy" [ref=f2e942]
+                              - generic [ref=f2e943]: Myo-Htet-San-Brainy
+                            - link "Apr 24, 2025" [ref=f2e944] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-12933940
+                              - time [ref=f2e945]: Apr 24, 2025
+                          - paragraph [ref=f2e947]: great write up!
+                          - generic [ref=f2e948]:
+                            - generic [ref=f2e949]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e950]:
+                                - img [ref=f2e951]
+                                - generic "1 upvote" [ref=f2e953]: "1"
+                              - group [ref=f2e954]:
+                                - generic "Add reactions" [ref=f2e955] [cursor=pointer]:
+                                  - img [ref=f2e956]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e959]:
+                                - generic [ref=f2e960]: ❤️
+                                - generic "1 person reacted with Love emoji" [ref=f2e961]: "1"
+                            - generic [ref=f2e963]: 0 replies
+                        - generic [ref=f2e965]:
+                          - generic [ref=f2e967]:
+                            - link "@Mori-Yang Mori-Yang" [ref=f2e968] [cursor=pointer]:
+                              - /url: https://github.com/Mori-Yang
+                              - img "@Mori-Yang" [ref=f2e969]
+                              - generic [ref=f2e970]: Mori-Yang
+                            - link "May 15, 2025" [ref=f2e971] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-13158023
+                              - time [ref=f2e972]: May 15, 2025
+                          - paragraph [ref=f2e974]: THX! Great article!
+                          - generic [ref=f2e975]:
+                            - generic [ref=f2e976]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e977]:
+                                - img [ref=f2e978]
+                                - generic "1 upvote" [ref=f2e980]: "1"
+                              - group [ref=f2e981]:
+                                - generic "Add reactions" [ref=f2e982] [cursor=pointer]:
+                                  - img [ref=f2e983]
+                              - button "You must be signed in to add reactions." [disabled] [ref=f2e986]:
+                                - generic [ref=f2e987]: ❤️
+                                - generic "1 person reacted with Love emoji" [ref=f2e988]: "1"
+                            - generic [ref=f2e990]: 0 replies
+                        - generic [ref=f2e992]:
+                          - generic [ref=f2e994]:
+                            - link "@LeDevNovice LeDevNovice" [ref=f2e995] [cursor=pointer]:
+                              - /url: https://github.com/LeDevNovice
+                              - img "@LeDevNovice" [ref=f2e996]
+                              - generic [ref=f2e997]: LeDevNovice
+                            - link "Aug 1, 2025" [ref=f2e998] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-13951239
+                              - time [ref=f2e999]: Aug 1, 2025
+                          - generic [ref=f2e1000]:
+                            - paragraph [ref=f2e1001]: Great post !
+                            - paragraph [ref=f2e1002]: Love the way you break down the invisible defaults (staleTime, gcTime, refetchOnWindowFocus, etc...). It really highlights how much TanStack Query default behaviour depends on them. I also loved the clever use of initialData to pre-filter the todo list and skip the first spinner. Simple yet impactful.
+                            - paragraph [ref=f2e1003]: Thanks for a synthesis that remains a go-to reference !
+                          - generic [ref=f2e1004]:
+                            - generic [ref=f2e1005]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e1006]:
+                                - img [ref=f2e1007]
+                                - generic "1 upvote" [ref=f2e1009]: "1"
+                              - group [ref=f2e1010]:
+                                - generic "Add reactions" [ref=f2e1011] [cursor=pointer]:
+                                  - img [ref=f2e1012]
+                              - generic [ref=f2e1014]:
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e1015]:
+                                  - generic [ref=f2e1016]: 👍
+                                  - generic "1 person reacted with +1 emoji" [ref=f2e1017]: "1"
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e1018]:
+                                  - generic [ref=f2e1019]: 👎
+                                  - generic "1 person reacted with -1 emoji" [ref=f2e1020]: "1"
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e1021]:
+                                  - generic [ref=f2e1022]: 😄
+                                  - generic "1 person reacted with Laugh emoji" [ref=f2e1023]: "1"
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e1024]:
+                                  - generic [ref=f2e1025]: ❤️
+                                  - generic "2 people reacted with Love emoji" [ref=f2e1026]: "2"
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e1027]:
+                                  - generic [ref=f2e1028]: 🚀
+                                  - generic "1 person reacted with Rocket emoji" [ref=f2e1029]: "1"
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e1030]:
+                                  - generic [ref=f2e1031]: 👀
+                                  - generic "1 person reacted with Eyes emoji" [ref=f2e1032]: "1"
+                            - generic [ref=f2e1034]: 0 replies
+                        - generic [ref=f2e1036]:
+                          - generic [ref=f2e1038]:
+                            - link "@mattchannn mattchannn" [ref=f2e1039] [cursor=pointer]:
+                              - /url: https://github.com/mattchannn
+                              - img "@mattchannn" [ref=f2e1040]
+                              - generic [ref=f2e1041]: mattchannn
+                            - link "Sep 11, 2025" [ref=f2e1042] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-14376138
+                              - time [ref=f2e1043]: Sep 11, 2025
+                          - generic [ref=f2e1044]:
+                            - blockquote [ref=f2e1045]:
+                              - paragraph [ref=f2e1046]: "First of all: React Query does not invoke the queryFn on every re-render, even with the default staleTime of zero."
+                            - paragraph [ref=f2e1047]:
+                              - text: I don't think it is true and I have tried it out in the minimal sample repository setup by myself.
+                              - text: If the staleTime is 0 means the cache will be expired / considered as stale instantly, so React Query will run the queryFn again to fetch the data. Do I understand it wrong?
+                          - generic [ref=f2e1048]:
+                            - generic [ref=f2e1049]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e1050]:
+                                - img [ref=f2e1051]
+                                - generic "1 upvote" [ref=f2e1053]: "1"
+                              - group [ref=f2e1054]:
+                                - generic "Add reactions" [ref=f2e1055] [cursor=pointer]:
+                                  - img [ref=f2e1056]
+                            - generic [ref=f2e1059]: 1 reply
+                          - generic [ref=f2e1063]:
+                            - link "@mattchannn" [ref=f2e1065] [cursor=pointer]:
+                              - /url: https://github.com/mattchannn
+                              - img "@mattchannn" [ref=f2e1066]
+                            - generic [ref=f2e1067]:
+                              - generic [ref=f2e1069]:
+                                - link "mattchannn" [ref=f2e1070] [cursor=pointer]:
+                                  - /url: https://github.com/mattchannn
+                                  - generic [ref=f2e1071]: mattchannn
+                                - link "Sep 12, 2025" [ref=f2e1072] [cursor=pointer]:
+                                  - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-14376639
+                                  - time [ref=f2e1073]: Sep 12, 2025
+                              - paragraph [ref=f2e1075]:
+                                - text: Turns out I am "unmounting" the modal instead of re-rendering it...
+                                - text: Apologies.
+                              - generic [ref=f2e1077]:
+                                - group [ref=f2e1078]:
+                                  - generic "Add reactions" [ref=f2e1079] [cursor=pointer]:
+                                    - img [ref=f2e1080]
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e1083]:
+                                  - generic [ref=f2e1084]: 👍
+                                  - generic "1 person reacted with +1 emoji" [ref=f2e1085]: "1"
+                        - generic [ref=f2e1087]:
+                          - generic [ref=f2e1089]:
+                            - link "@Jorundur Jorundur" [ref=f2e1090] [cursor=pointer]:
+                              - /url: https://github.com/Jorundur
+                              - img "@Jorundur" [ref=f2e1091]
+                              - generic [ref=f2e1092]: Jorundur
+                            - link "Sep 12, 2025" [ref=f2e1093] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-14382777
+                              - time [ref=f2e1094]: Sep 12, 2025
+                          - generic [ref=f2e1095]:
+                            - paragraph [ref=f2e1096]: Thank you for this post and all the others, all great stuff!
+                            - paragraph [ref=f2e1097]: You mention that the Query Key is "similar to what a dependency array represents for useEffect", but isn't one core difference between the two the fact that useEffect does the comparison in a shallow manner while react-query does the comparison for query keys deep?
+                            - paragraph [ref=f2e1098]: I.e. when we pass an object to the dependency array to useEffect we have to be careful and make sure it's memoized but if an object is part of a query key we don't have to worry about that?
+                            - paragraph [ref=f2e1099]: Might be a misunderstanding on my part, but perhaps worth mentioning in the post if not! 🙏
+                          - generic [ref=f2e1100]:
+                            - generic [ref=f2e1101]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e1102]:
+                                - img [ref=f2e1103]
+                                - generic "1 upvote" [ref=f2e1105]: "1"
+                              - group [ref=f2e1106]:
+                                - generic "Add reactions" [ref=f2e1107] [cursor=pointer]:
+                                  - img [ref=f2e1108]
+                            - generic [ref=f2e1111]: 1 reply
+                          - generic [ref=f2e1115]:
+                            - link "@TkDodo" [ref=f2e1117] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo
+                              - img "@TkDodo" [ref=f2e1118]
+                            - generic [ref=f2e1119]:
+                              - generic [ref=f2e1121]:
+                                - link "TkDodo" [ref=f2e1122] [cursor=pointer]:
+                                  - /url: https://github.com/TkDodo
+                                  - generic [ref=f2e1123]: TkDodo
+                                - link "Sep 12, 2025" [ref=f2e1124] [cursor=pointer]:
+                                  - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-14383368
+                                  - time [ref=f2e1125]: Sep 12, 2025
+                                - generic [ref=f2e1127]: Owner
+                              - paragraph [ref=f2e1129]:
+                                - text: yeah, that’s true. React Query uses the
+                                - code [ref=f2e1130]: queryKeyHashFn
+                                - text: to create a stable string representation of the key that is then compared.
+                              - generic [ref=f2e1132]:
+                                - group [ref=f2e1133]:
+                                  - generic "Add reactions" [ref=f2e1134] [cursor=pointer]:
+                                    - img [ref=f2e1135]
+                                - button "You must be signed in to add reactions." [disabled] [ref=f2e1138]:
+                                  - generic [ref=f2e1139]: 👍
+                                  - generic "1 person reacted with +1 emoji" [ref=f2e1140]: "1"
+                        - generic [ref=f2e1142]:
+                          - generic [ref=f2e1144]:
+                            - link "@Evavic44 Evavic44" [ref=f2e1145] [cursor=pointer]:
+                              - /url: https://github.com/Evavic44
+                              - img "@Evavic44" [ref=f2e1146]
+                              - generic [ref=f2e1147]: Evavic44
+                            - link "Jan 11" [ref=f2e1148] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-15466604
+                              - time [ref=f2e1149]: Jan 11
+                          - generic [ref=f2e1150]:
+                            - paragraph [ref=f2e1151]:
+                              - text: I'm only seeing this blog now but the content already echoes practices I currently follow in building projects with react query, thankfully. I do have a question concerning abstracting
+                              - code [ref=f2e1152]: useQuery
+                              - text: to custom hooks for more cleaner implementation.
+                            - paragraph [ref=f2e1153]:
+                              - text: Since creating custom hooks for each query is a common practice, have you considered providing auto-generated hooks internally? This could follow a pattern similar to
+                              - link "Redux Toolkit Query Hooks" [ref=f2e1154] [cursor=pointer]:
+                                - /url: https://redux-toolkit.js.org/rtk-query/usage/queries#performing-queries-with-react-hooks
+                              - text: ", where you define a single service or slice with related queries and it automatically exports corresponding hooks for use in the component layer."
+                            - paragraph [ref=f2e1155]: "For example, in RTK Query:"
+                            - generic [ref=f2e1156]:
+                              - generic [ref=f2e1157]:
+                                - text: "// src/services/post.service.ts export const PostApi = createApi({ baseQuery: fetchBaseQuery({ baseUrl: 'https://myposts.com/api/v1' }), endpoints: (build) => ({ getPosts: build.query<PostsResponse<Post>, number |"
+                                - generic [ref=f2e1158]: void
+                                - text: ">({ query: (page = 1) =>"
+                                - generic [ref=f2e1159]:
+                                  - text: "`posts?page="
+                                  - generic [ref=f2e1160]: "${page}"
+                                  - text: "`"
+                                - text: ", }), getPost: build.query<Post, string>({ query: (id) =>"
+                                - generic [ref=f2e1161]:
+                                  - text: "`post/"
+                                  - generic [ref=f2e1162]: "${id}"
+                                  - text: "`"
+                                - text: ", }), }), }) export const { useGetPostsQuery, useGetPostQuery } = PostApi // Auto-generated hooks"
+                              - button "Copy" [ref=f2e1164] [cursor=pointer]:
+                                - img [ref=f2e1165]
+                            - paragraph [ref=f2e1168]: Would this be something you’ve considered for TanStack Query? I’d love to hear your thoughts and any ideas on how this might be implemented if it does exist. Thanks!
+                          - generic [ref=f2e1169]:
+                            - generic [ref=f2e1170]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e1171]:
+                                - img [ref=f2e1172]
+                                - generic "1 upvote" [ref=f2e1174]: "1"
+                              - group [ref=f2e1175]:
+                                - generic "Add reactions" [ref=f2e1176] [cursor=pointer]:
+                                  - img [ref=f2e1177]
+                            - generic [ref=f2e1180]: 2 replies
+                          - generic [ref=f2e1181]:
+                            - generic [ref=f2e1184]:
+                              - link "@TkDodo" [ref=f2e1186] [cursor=pointer]:
+                                - /url: https://github.com/TkDodo
+                                - img "@TkDodo" [ref=f2e1187]
+                              - generic [ref=f2e1188]:
+                                - generic [ref=f2e1190]:
+                                  - link "TkDodo" [ref=f2e1191] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo
+                                    - generic [ref=f2e1192]: TkDodo
+                                  - link "Jan 14" [ref=f2e1193] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-15495889
+                                    - time [ref=f2e1194]: Jan 14
+                                  - generic [ref=f2e1196]: Owner
+                                - paragraph [ref=f2e1198]: There are lots of existing tools that e.g. auto generate hooks from open API specifications, or tools like tRPC that use the type system to do so. TanStack Query is un-opinionated on that topic (and will stay that way), you can define your queries ad-hoc wherever you want to, as opposed to rtk-query which requires an up-front definition (even if its scattered across slices).
+                                - group [ref=f2e1201]:
+                                  - generic "Add reactions" [ref=f2e1202] [cursor=pointer]:
+                                    - img [ref=f2e1203]
+                            - generic [ref=f2e1207]:
+                              - link "@Evavic44" [ref=f2e1209] [cursor=pointer]:
+                                - /url: https://github.com/Evavic44
+                                - img "@Evavic44" [ref=f2e1210]
+                              - generic [ref=f2e1211]:
+                                - generic [ref=f2e1213]:
+                                  - link "Evavic44" [ref=f2e1214] [cursor=pointer]:
+                                    - /url: https://github.com/Evavic44
+                                    - generic [ref=f2e1215]: Evavic44
+                                  - link "Jan 16" [ref=f2e1216] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-15509417
+                                    - time [ref=f2e1217]: Jan 16
+                                - paragraph [ref=f2e1219]: Noted. Thanks for the info.
+                                - group [ref=f2e1222]:
+                                  - generic "Add reactions" [ref=f2e1223] [cursor=pointer]:
+                                    - img [ref=f2e1224]
+                        - generic [ref=f2e1227]:
+                          - generic [ref=f2e1229]:
+                            - link "@iurii-kyrylenko iurii-kyrylenko" [ref=f2e1230] [cursor=pointer]:
+                              - /url: https://github.com/iurii-kyrylenko
+                              - img "@iurii-kyrylenko" [ref=f2e1231]
+                              - generic [ref=f2e1232]: iurii-kyrylenko
+                            - link "Feb 18" [ref=f2e1233] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-15839884
+                              - time [ref=f2e1234]: Feb 18
+                          - paragraph [ref=f2e1236]:
+                            - text: Thank you,
+                            - link "@TkDodo" [ref=f2e1237] [cursor=pointer]:
+                              - /url: https://github.com/TkDodo
+                            - text: ", for the post!"
+                            - text: "Not sure I quite understand how the enabled option works in the example you provided: the behaviour didn't changed after I've removed the line 59, where the enabled option was set as"
+                            - code [ref=f2e1238]: "enabled: typeof draft === \"undefined\","
+                          - generic [ref=f2e1239]:
+                            - generic [ref=f2e1240]:
+                              - button "You must be signed in to upvote." [disabled] [ref=f2e1241]:
+                                - img [ref=f2e1242]
+                                - generic "1 upvote" [ref=f2e1244]: "1"
+                              - group [ref=f2e1245]:
+                                - generic "Add reactions" [ref=f2e1246] [cursor=pointer]:
+                                  - img [ref=f2e1247]
+                            - generic [ref=f2e1250]: 2 replies
+                          - generic [ref=f2e1251]:
+                            - generic [ref=f2e1254]:
+                              - link "@TkDodo" [ref=f2e1256] [cursor=pointer]:
+                                - /url: https://github.com/TkDodo
+                                - img "@TkDodo" [ref=f2e1257]
+                              - generic [ref=f2e1258]:
+                                - generic [ref=f2e1260]:
+                                  - link "TkDodo" [ref=f2e1261] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo
+                                    - generic [ref=f2e1262]: TkDodo
+                                  - link "Feb 18" [ref=f2e1263] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-15845431
+                                    - time [ref=f2e1264]: Feb 18
+                                  - generic [ref=f2e1266]: Owner
+                                - generic [ref=f2e1267]:
+                                  - paragraph [ref=f2e1268]: "the difference is that the query becomes disabled as soon as you have typed into the input field to avoid background udpates. you can reproduce like this:"
+                                  - list [ref=f2e1269]:
+                                    - listitem [ref=f2e1270]: open the dialog
+                                    - listitem [ref=f2e1271]: type into the input field
+                                    - listitem [ref=f2e1272]: trigger a background refetch, best by focusing another tab and then re-focusing it
+                                  - paragraph [ref=f2e1273]:
+                                    - text: without the
+                                    - code [ref=f2e1274]: enabled
+                                    - text: set, you would make another request (you can see it in the devtools). yes, it won’t overwrite your data, but you’re making requests that might not be necessary.
+                                - group [ref=f2e1277]:
+                                  - generic "Add reactions" [ref=f2e1278] [cursor=pointer]:
+                                    - img [ref=f2e1279]
+                            - generic [ref=f2e1283]:
+                              - link "@iurii-kyrylenko" [ref=f2e1285] [cursor=pointer]:
+                                - /url: https://github.com/iurii-kyrylenko
+                                - img "@iurii-kyrylenko" [ref=f2e1286]
+                              - generic [ref=f2e1287]:
+                                - generic [ref=f2e1289]:
+                                  - link "iurii-kyrylenko" [ref=f2e1290] [cursor=pointer]:
+                                    - /url: https://github.com/iurii-kyrylenko
+                                    - generic [ref=f2e1291]: iurii-kyrylenko
+                                  - link "Feb 18" [ref=f2e1292] [cursor=pointer]:
+                                    - /url: https://github.com/TkDodo/blog-comments/discussions/51#discussioncomment-15846159
+                                    - time [ref=f2e1293]: Feb 18
+                                - generic [ref=f2e1294]:
+                                  - paragraph [ref=f2e1295]:
+                                    - text: Thanks,
+                                    - link "@TkDodo" [ref=f2e1296] [cursor=pointer]:
+                                      - /url: https://github.com/TkDodo
+                                    - text: ", for the quick reply."
+                                    - text: Indeed, there are no background fetches being triggered as long as I type anything.
+                                    - text: "To see that without the devtool, I counted the fetches in the custom hook and displayed them in the modal:"
+                                  - generic [ref=f2e1297]:
+                                    - generic [ref=f2e1298]: "const useRandomValue = () => { const [draft, setDraft] = React.useState(undefined); const [fetchCount, setFetchCount] = React.useState(0); const { data, ...queryInfo } = useQuery( \"random\", async () => { setFetchCount((c) => c + 1) await sleep(1000); return Promise.resolve(String(Math.random())); }, { enabled: typeof draft === \"undefined\" } ); return { value: draft ?? data, setDraft, fetchCount, queryInfo }; };"
+                                    - button "Copy" [ref=f2e1300] [cursor=pointer]:
+                                      - img [ref=f2e1301]
+                                  - paragraph [ref=f2e1304]: Thank you for your work!
+                                - group [ref=f2e1307]:
+                                  - generic "Add reactions" [ref=f2e1308] [cursor=pointer]:
+                                    - img [ref=f2e1309]
+                - alert [ref=f2e1311]
+      - generic [ref=e544]:
+        - heading "Continue Series" [level=2] [ref=e545]
+        - link "Next React Query Data Transformations React Query Data Transformations" [ref=e547] [cursor=pointer]:
+          - /url: /blog/react-query-data-transformations
+          - paragraph [ref=e548]: Next
+          - generic [ref=e549]:
+            - generic [ref=e551]:
+              - img
+              - img "React Query Data Transformations" [ref=e552]
+            - paragraph [ref=e554]: React Query Data Transformations
+  - contentinfo [ref=e555]:
+    - generic [ref=e558]:
+      - generic [ref=e559]: © 2026 by TkDodo's blog. All rights reserved.
+      - generic [ref=e560]:
+        - generic [ref=e561]:
+          - link "Theme" [ref=e562] [cursor=pointer]:
+            - /url: https://github.com/LekoArts/astro-theme-minimal-blog
+          - text: by
+          - link "LekoArts" [ref=e563] [cursor=pointer]:
+            - /url: https://www.lekoarts.de?utm_source=minimal-blog&utm_medium=Theme
+          - text: .
+        - generic [ref=e564]:
+          - text: This site is powered by
+          - link "Netlify" [ref=e565] [cursor=pointer]:
+            - /url: https://www.netlify.com
+          - text: .
