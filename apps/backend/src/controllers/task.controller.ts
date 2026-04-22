@@ -1,11 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../lib/prisma";
 
-export async function createTask(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function createTask(req: Request, res: Response, next: NextFunction) {
   try {
     const task = await prisma.task.create({
       data: {
@@ -19,16 +15,21 @@ export async function createTask(
   }
 }
 
-export async function getTasks(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function getTasks(req: Request, res: Response, next: NextFunction) {
   try {
-    const { completed, projectId } = req.query as {
+    const { completed, projectId, search, sort } = req.query as {
       completed?: boolean;
       projectId?: string;
+      search?: string;
+      sort?: "createdAt_desc" | "createdAt_asc" | "progress_desc";
     };
+
+    const orderBy =
+      sort === "createdAt_asc"
+        ? { createdAt: "asc" as const }
+        : sort === "progress_desc"
+          ? { completedSessions: "desc" as const }
+          : { createdAt: "desc" as const };
 
     const tasks = await prisma.task.findMany({
       where: {
@@ -36,8 +37,9 @@ export async function getTasks(
         isActive: true,
         ...(completed !== undefined && { isCompleted: completed }),
         ...(projectId && { projectId }),
+        ...(search && { title: { contains: search, mode: "insensitive" } }),
       },
-      orderBy: { createdAt: "desc" },
+      orderBy,
     });
 
     res.json({ status: "success", data: tasks });
@@ -46,11 +48,7 @@ export async function getTasks(
   }
 }
 
-export async function getTaskById(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function getTaskById(req: Request, res: Response, next: NextFunction) {
   try {
     const task = await prisma.task.findFirst({
       where: {
@@ -70,11 +68,7 @@ export async function getTaskById(
   }
 }
 
-export async function updateTask(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function updateTask(req: Request, res: Response, next: NextFunction) {
   try {
     const task = await prisma.task.findFirst({
       where: {
@@ -99,11 +93,7 @@ export async function updateTask(
   }
 }
 
-export async function deleteTask(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function deleteTask(req: Request, res: Response, next: NextFunction) {
   try {
     const task = await prisma.task.findFirst({
       where: {
@@ -133,11 +123,7 @@ export async function deleteTask(
   }
 }
 
-export async function completeTask(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export async function completeTask(req: Request, res: Response, next: NextFunction) {
   try {
     const task = await prisma.task.findFirst({
       where: {
