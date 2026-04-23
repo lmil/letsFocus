@@ -21,4 +21,6 @@ export const getTasksSchema = z.object({
     .transform((val) => val === "true")
     .optional(),
   projectId: z.uuid().optional(),
+  search: z.string().optional(),
+  sort: z.enum(["createdAt_desc", "createdAt_asc", "progress_desc"]).optional(),
 });

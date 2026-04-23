@@ -26,8 +26,23 @@ export interface TaskResponse {
   data: Task;
 }
 
-export async function getTasks(): Promise<Task[]> {
-  const response = await api.get<GetTaskResponse>("/tasks");
+export interface GetTasksParams {
+  completed?: boolean;
+  search?: string;
+  sort?: "createdAt_desc" | "createdAt_asc" | "progress_desc";
+}
+
+export async function getTasks(params?: GetTasksParams): Promise<Task[]> {
+  const query = new URLSearchParams();
+
+  if (params?.search) query.set("search", params.search);
+  if (params?.sort) query.set("sort", params.sort);
+  if (params?.completed !== undefined) query.set("completed", String(params.completed));
+
+  const queryString = query.toString();
+  const url = queryString ? `/tasks?${queryString}` : "/tasks";
+
+  const response = await api.get<GetTaskResponse>(url);
   return response.data.data;
 }
 
