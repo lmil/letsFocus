@@ -56,6 +56,11 @@ export async function getTaskById(req: Request, res: Response, next: NextFunctio
         userId: "2fd7af93-3f08-4c3b-a18d-d2cac3996f86",
         isActive: true,
       },
+      include: {
+        sessions: {
+          orderBy: { startedAt: "desc" },
+        },
+      },
     });
     if (!task) {
       res.status(404).json({ status: "error", message: "Task not found" });
