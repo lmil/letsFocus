@@ -4,6 +4,7 @@ import ManagePage from "./pages/ManagePage";
 import CalendarPage from "./pages/CalendarPage";
 import ReportPage from "./pages/ReportPage";
 import BottomNav from "./components/BottomNav";
+import { TaskDetail } from "./pages/TaskDetail";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/report" element={<ReportPage />} />
             <Route path="/settings" element={<ReportPage />} />
+            <Route path="/tasks/:id" element={<TaskDetail />} />
           </Routes>
         </div>
         <BottomNav />
