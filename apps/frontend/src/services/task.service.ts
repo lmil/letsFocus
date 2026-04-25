@@ -32,6 +32,30 @@ export interface GetTasksParams {
   sort?: "createdAt_desc" | "createdAt_asc" | "progress_desc";
 }
 
+export type Session = {
+  id: string;
+  type: "FOCUS" | "SHORT_BREAK" | "LONG_BREAK";
+  duration: number;
+  actualDuration: number | null;
+  startedAt: string;
+  endedAt: string | null;
+  isCompleted: boolean;
+};
+
+export type TaskWithSessions = Task & {
+  sessions: Session[];
+};
+
+export interface GetTaskByIdResponse {
+  status: string;
+  data: TaskWithSessions;
+}
+
+export async function getTaskById(id: string): Promise<TaskWithSessions> {
+  const response = await api.get<GetTaskByIdResponse>(`/tasks/${id}`);
+  return response.data.data;
+}
+
 export async function getTasks(params?: GetTasksParams): Promise<Task[]> {
   const query = new URLSearchParams();
 
