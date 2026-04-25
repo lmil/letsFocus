@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { type Task } from "../../services/task.service";
 
 type TaskCardProps = {
@@ -5,9 +6,11 @@ type TaskCardProps = {
   onComplete: (id: string) => void;
 };
 function TaskCard({ task, onComplete }: TaskCardProps) {
+  const navigate = useNavigate();
   return (
     <div
-      className="flex items-center rounded-2xl px-4 py-3 gap-3"
+      onClick={() => navigate(`/tasks/${task.id}`)}
+      className="flex items-center rounded-2xl px-4 py-3 gap-3 cursor-pointer"
       style={{
         background: task.isCompleted ? "rgba(255,255,255,0.8)" : "white",
         opacity: task.isCompleted ? 0.7 : 1,
@@ -42,7 +45,10 @@ function TaskCard({ task, onComplete }: TaskCardProps) {
         </div>
       </div>
       <button
-        onClick={() => onComplete(task.id)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onComplete(task.id);
+        }}
         className="w-5 h-5 border-2 rounded-full flex-shrink-0 flex items-center justify-center"
         style={{
           borderColor: task.isCompleted ? `${task.color}60` : "#e5e7eb",
